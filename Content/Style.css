@@ -1,0 +1,213 @@
+﻿body {
+    margin: 0;
+    background-color: #000;
+    color: #DEDEDE;
+    font-family: Calibri, Tahoma;
+}
+
+.page-content {
+	display:none;
+}
+
+.page-loading {
+	position:absolute;
+	top: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	background: url(images/loader.gif) no-repeat center center #fff;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+    ul li {
+        list-style: none;
+        background-color: grey;
+        padding: 10px;
+        margin: 10px;
+        border: 1px solid grey;
+        border-radius: 5px;
+        -webkit-box-shadow: #333 -3px 3px 4px;
+        box-shadow: #333 -3px 3px 4px;
+        color: #FFFFFF;
+    }
+
+.error-box {
+    position:absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #FFF;
+    color: #000;
+    width: 100%;
+	height: 100%;
+    text-align: center;
+	z-index: 3;
+}
+    .error-box > div {
+        margin: 20% auto;
+    }
+
+.success {
+    background-color: #006400!important;
+}
+
+.failure {
+    background-color: Red!important;
+}
+
+.running {
+    background-color: gray!important;
+}
+
+.highlight {
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+.running-image {
+    float: left;
+    margin: 5px;
+    width: 50px;
+    height: 50px;
+}
+
+.clear {
+    clear: both;
+}
+
+#left-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+	z-index:1;
+}
+
+#right-panel {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+	z-index:1;
+}
+
+#main-build {
+    height: 100%;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-color: gray;
+}
+
+    #main-build.success.c0 {
+        background-image: url('./images/happy1.png');
+    }
+
+    #main-build.failure.c0 {
+        background-image: url('./images/angry1.png');
+    }
+
+    #main-build.success.c1 {
+        background-image: url('./images/happy2.png');
+    }
+
+    #main-build.failure.c1 {
+        background-image: url('./images/angry2.png');
+    }
+
+    #main-build.success.c2 {
+        background-image: url('./images/happy3.png');
+    }
+
+    #main-build.failure.c2 {
+        background-image: url('./images/angry3.png');
+    }
+
+    #main-build.success.c3 {
+        background-image: url('./images/happy4.png');
+    }
+
+    #main-build.failure.c3 {
+        background-image: url('./images/angry4.png');
+    }
+
+    #main-build.success.c4 {
+        background-image: url('./images/happy5.png');
+    }
+
+    #main-build.failure.c4 {
+        background-image: url('./images/angry5.png');
+    }
+
+    #main-build.success.c5 {
+        background-image: url('./images/happy6.png');
+    }
+
+    #main-build.failure.c5 {
+        background-image: url('./images/angry6.png');
+    }
+
+    #main-build.success.c6 {
+        background-image: url('./images/happy7.png');
+    }
+
+    #main-build.failure.c6 {
+        background-image: url('./images/angry7.png');
+    }
+
+    #main-build.success.c7 {
+        background-image: url('./images/happy8.png');
+    }
+
+    #main-build.failure.c7 {
+        background-image: url('./images/angry8.png');
+    }
+
+
+#main-branch-name {
+    font-size: 2em;
+    text-align: center;
+    text-transform: lowercase;
+}
+
+#main-branch-status {
+    font-size: 6em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.build-type, .build-status {
+    float: right;
+}
+
+.build-branch {
+    float: left;
+}
+
+#main-branch-triggered-by {
+    font-size: 2em;
+    text-align: center;
+}
+
+#main-branch-name, #main-branch-triggered-by, #main-branch-status, ul li {
+    -webkit-text-shadow: #000000 -3px 3px 4px;
+    text-shadow: #000000 -3px 3px 4px;
+}
+
+.progress-container {
+    height: 10px;
+    margin-top: 7px;
+    background-color: #000000;
+}
+
+.ui-progressbar-value {
+    background-color: #FFFFFF;
+    background-image: none;
+    height: 100%;
+}
