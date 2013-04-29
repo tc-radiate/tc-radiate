@@ -21,7 +21,7 @@
         self.loadMainBuildStatus();
 
         //Load a new build image every so often just for fun
-        setInterval(function () { self.randomClass(getRandomClass); }, buildImageIntervalMs);
+        setInterval(function () { self.randomClass(getRandomClass()); }, buildImageIntervalMs);
 
     };
 
