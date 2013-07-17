@@ -11,8 +11,8 @@
 
         self.issueId = ko.computed(function () {
             if(self.relatedIssues 
-                && !self.relatedIssues.issueUsage 
-                && !self.relatedIssues.issueUsage.issue)
+                && self.relatedIssues.issueUsage 
+                && self.relatedIssues.issueUsage.issue)
                 return self.relatedIssues.issueUsage.issue.id();
             return null;
         });
