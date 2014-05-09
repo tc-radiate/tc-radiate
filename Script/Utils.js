@@ -26,9 +26,9 @@ ko.safeObservable = function (initialValue) {
 //----------------------
 // HELPER METHODS
 //----------------------
-//Returns one of 8 random images for the buid success or fail image
+//Returns one of 11 random images for the buid success or fail image
 function getRandomClass() {
-	return 'c' + Math.floor(Math.random() * 8);
+	return 'c' + Math.floor(Math.random() * 11);
 }
 
 //Used to append a timestamp to the url so the result isn't cached
