@@ -169,6 +169,37 @@ ul {
         background-image: url('./images/angry8.png');
     }
 
+    #main-build.success.c8 {
+        background-image: url('./images/happy9.png');
+    }
+
+    #main-build.failure.c8 {
+        background-image: url('./images/angry9.png');
+    }
+
+    #main-build.success.c9 {
+        background-image: url('./images/happy10.png');
+    }
+
+    #main-build.failure.c9 {
+        background-image: url('./images/angry10.png');
+    }
+
+    #main-build.failure.c10 {
+        background-image: url('./images/angry11.gif');
+    }
+
+    #main-build.success.c10 {
+        background-image: url('./images/happy10.png');
+    }
+
+    #main-build.unknown.c0, #main-build.unknown.c2, #main-build.unknown.c4, #main-build.unknown.c6, #main-build.unknown.c8, #main-build.unknown.c10 {
+        background-image: url('./images/unknown1.png');
+    }
+
+    #main-build.unknown.c1, #main-build.unknown.c3, #main-build.unknown.c5, #main-build.unknown.c7, #main-build.unknown.c9, #main-build.unknown.c11 {
+        background-image: url('./images/unknown2.png');
+    }
 
 #main-branch-name {
     font-size: 2em;
@@ -186,8 +217,12 @@ ul {
     float: right;
 }
 
-.build-branch {
+.build-branch, .build-number {
     float: left;
+}
+
+.build-number { 
+    padding-left: 15px;
 }
 
 #main-branch-triggered-by {
