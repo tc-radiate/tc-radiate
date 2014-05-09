@@ -6,7 +6,7 @@
     self.buildTypes   = ko.observableArray();
     self.errorMessage = ko.observable();
     self.isLoading    = ko.observable(true);
-    self.randomClass  = ko.observable(getRandomClass());
+    self.randomClass  = ko.observable(Utils.getRandomClass());
     self.mainBuild    = ko.observable();
 
     self.hasError = ko.computed(function () {
@@ -21,13 +21,13 @@
         self.loadMainBuildStatus();
 
         //Load a new build image every so often just for fun
-        setInterval(function () { self.randomClass(getRandomClass()); }, buildImageIntervalMs);
+        setInterval(function () { self.randomClass(Utils.getRandomClass()); }, Settings.buildImageIntervalMs);
 
     };
 
     self.loadAllBuilds = function () {
         self.isLoading(true);
-        $.getJSON(buildsUrl + getTsQSParam(), function (data) {
+        $.getJSON(Settings.buildsUrl + Utils.getTsQSParam(), function (data) {
             self.builds(ko.utils.arrayMap(data.build, function (build) {
                 return new SingleBuildViewModel(build, self.buildTypes());
             }));
@@ -39,8 +39,8 @@
         }).always(function () {
             self.isLoading(false);
             self.loadMainBuildStatus();
-            if (enableAutoUpdate)
-                setTimeout(self.loadAllBuilds, checkIntervalMs);
+            if (Settings.enableAutoUpdate)
+                setTimeout(self.loadAllBuilds, Settings.checkIntervalMs);
             if (self.isFirstLoad())
                 self.isFirstLoad(false);
         });
@@ -48,7 +48,7 @@
 
     self.loadBuildTypes = function () {
         self.isLoading(true);
-        $.getJSON(buildTypesUrl, function (data) {
+        $.getJSON(Settings.buildTypesUrl, function (data) {
             self.buildTypes(data.buildType);
             self.loadAllBuilds();
             self.isLoading(false);
@@ -57,8 +57,8 @@
 
     self.loadMainBuildStatus = function () {
         self.isLoading(true);
-        $.getJSON(buildStatusUrl + getTsQSParam(), function (data) {
-            self.mainBuild(ko.mapping.fromJS(data, {        
+        $.getJSON(Settings.buildStatusUrl + Utils.getTsQSParam(), function (data) {
+            self.mainBuild(ko.mapping.fromJS(data, {
                 create: function(options) {
                     return new MainBuildViewModel(options.data, self.buildTypes());
                 }

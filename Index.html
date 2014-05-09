@@ -13,12 +13,14 @@
 	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning() }">
 	                <div class="build-branch"  data-bind="text: branchName() + ' branch'"></div>
 	                <div class="build-type" data-bind="text: buildType"></div>
-	                <div class="clear"></div>   
-	                <div class="build-status" data-bind="text: isRunning() ? '' : status"></div>   
-	                <div class="clear"></div>       
+	                <div class="clear"></div>
+	                <div class="build-status" data-bind="text: isRunning() ? '' : status"></div>
+	                <div class="clear"></div>
 	                <!-- ko if: isRunning() -->
-	                <div class="progress-container" data-bind="attr: { 'data-progress': percentageComplete() }"></div>
-	                <!-- /ko -->
+                        <!-- ko if: percentageComplete -->
+	                       <div class="progress-container" data-bind="attr: { 'data-progress':percentageComplete() }"></div>
+	                   <!-- /ko -->
+                    <!-- /ko -->
 	            </li>
 	        </ul>
 	    </div>
@@ -41,7 +43,7 @@
             <!-- /ko -->
 	    </div>
 
-	</div>		
+	</div>
     <div class="error-box" data-bind="showHide: hasError">
         <div data-bind="text: errorMessage"></div>
     </div>
@@ -50,7 +52,9 @@
     <script src="Script/Libraries/knockout.mapping-2.4.1.js"></script>
     <script src="Script/Libraries/jquery-2.0.0.min.js"></script>
     <script src="Script/Libraries/jquery-ui.min.js"></script>
-    <script src="Script/Settings.js"></script>
+    <script src="Script/Libraries/queryStringDecoder.js"></script>
+
+    <script src="Settings.js"></script>
     <script src="Script/Init.js"></script>
     <script src="Script/Utils.js"></script>
 

@@ -7,8 +7,8 @@
         ko.mapping.fromJS(data, {}, self);
 
         self.lowerStatus = ko.computed(function () {
-            if(this.status() == null)
-                return null;
+            if(!this.status || this.status() == null)
+                return 'unknown';
             return this.status().toLowerCase();
         }, self);
 
