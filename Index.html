@@ -11,15 +11,13 @@
 	    <div id="left-panel">
 	        <ul data-bind="foreach: { data: builds }">
 	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning() }">
-	                <div class="build-branch"  data-bind="text: branchName() + ' branch'"></div>
+	                <div class="build-branch"  data-bind="text: description()"></div>
 	                <div class="build-type" data-bind="text: buildType"></div>
 	                <div class="clear"></div>
 	                <div class="build-status" data-bind="text: isRunning() ? '' : status"></div>
 	                <div class="clear"></div>
-	                <!-- ko if: isRunning() -->
-                        <!-- ko if: percentageComplete -->
-	                       <div class="progress-container" data-bind="attr: { 'data-progress':percentageComplete() }"></div>
-	                   <!-- /ko -->
+	                <!-- ko if: hasProgress() -->
+                       <div class="progress-container" data-bind="attr: { 'data-progress' : percentageComplete() }"></div>
                     <!-- /ko -->
 	            </li>
 	        </ul>
@@ -28,7 +26,10 @@
 	        <!-- ko if: mainBuild() != null && mainBuild().status() != null -->
 	        <div id="main-build" data-bind="attr: { class: mainBuild().lowerStatus() + ' ' + randomClass() }">
 	            <div id="main-branch-name">
-	                Build <span class="highlight" data-bind="text: mainBuild().number"></span> on the <span data-bind="text: mainBuild().branchName"></span> branch
+	                Build <span class="highlight" data-bind="text: mainBuild().number"></span>
+                    <!-- ko if: mainBuild().hasBranchName() -->
+                        on the <span data-bind="text: mainBuild().branchName"></span> branch
+                    <!-- /ko -->
 	            </div>
 	            <div id="main-branch-status" class="highlight" data-bind="text: mainBuild().status"></div>
                 <div id="main-branch-triggered-by">
