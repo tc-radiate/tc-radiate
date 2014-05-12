@@ -4,7 +4,7 @@ A simple JavaScript build radiator for TeamCity
 
 Please feel free to fork and hack away at the code.
 
-![Screen Shot](screenshot.png "Screen Shot")
+![Screenshot](screenshot.jpg "Screenshot")
 
 Configuration
 -------------
