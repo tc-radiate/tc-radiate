@@ -5,7 +5,7 @@
 
         self.triggeredBy = ko.computed(function () {
             if(self.triggered && self.triggered.user)
-                return self.triggered.user.name();
+                return self.triggered.user.username();
             return null;
         });
 
