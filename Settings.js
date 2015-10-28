@@ -1,6 +1,6 @@
 ﻿var Settings = {
     //The url that points to team city
-    teamCityUrl: 'http://tclive:8111',
+    teamCityUrl: 'https://ci.travcorpservices.com',
 
     //The main branch to show the master build status on the right hand panel on the screen
     mainBranch: 'develop',
@@ -8,11 +8,11 @@
     //Proxy to handle the cross domain ajax request.
     // This will need to be hosted on the relevant server e.g. proxy-node.js on Node.js or proxy-aspnet.ashx on IIS
     // You could write your own proxy just so long as it is hosted form the same domain as the rest of the app
-    proxy: 'proxy-aspnet.ashx?url=',
+    proxy: '',
 
     // If your TeamCity is set up for guest access, you can just use it. Otherwise, the moment that tc-radiate sends first request to TC, TC will
     // ask the user for basic http credentials. Your browser may even offer you to save them.
-    useTeamCityGuest: true,
+    useTeamCityGuest: false,
 
     //How often to call the TeamCity webservices and update the screen
     checkIntervalMs: 5000, //5000 ms = 5 seconds
