@@ -40,4 +40,4 @@ Settings.buildsUrl = Settings.proxy + Settings.teamCityUrl + '/'+authType+'/app/
 Settings.buildTypesUrl = Settings.proxy + Settings.teamCityUrl + '/'+authType+'/app/rest/buildTypes';
 
 //The url for the status of the build on the main branch
-Settings.buildStatusUrl = Settings.proxy + Settings.teamCityUrl + '/'+authType+'/app/rest/builds/branch:' + Settings.mainBranch + ',running:any,canceled:any';
+Settings.buildStatusUrl = Settings.proxy + Settings.teamCityUrl + '/'+authType+'/app/rest/builds/branch:' + Settings.mainBranch + ',running:any,canceled:any?';
