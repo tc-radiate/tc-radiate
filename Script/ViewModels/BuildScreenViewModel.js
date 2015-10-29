@@ -73,7 +73,7 @@
             getBuildStatusUrlForBranch(Settings.mainBranch)
             :
             getBuildStatusUrlForBuildId((ko.utils.arrayFirst(self.builds(), function (build) {
-                return build.status() === 'FAILURE' && build.hasBranchName();
+                return build.status() === 'FAILURE';
             }) || self.builds()[0]).id());
 
         self.isLoading(true);
