@@ -26,10 +26,11 @@
 	        <!-- ko if: mainBuild() != null && mainBuild().status() != null -->
 	        <div id="main-build" data-bind="attr: { class: mainBuild().lowerStatus() + ' ' + randomClass() }">
 	            <div id="main-branch-name">
-	                Build <span class="highlight" data-bind="text: mainBuild().number"></span>
-                    <!-- ko if: mainBuild().hasBranchName() -->
-                        on the <span data-bind="text: mainBuild().branchName"></span> branch
-                    <!-- /ko -->
+	                <span data-bind="text: mainBuild().buildType.projectName"></span> > <span data-bind="text: mainBuild().buildType.name"></span> >
+	                <!-- ko if: mainBuild().hasBranchName() -->
+                    <span data-bind="text: mainBuild().branchName"></span> branch >
+	                <!-- /ko -->
+                    Build <span class="highlight" data-bind="text: mainBuild().number"></span>
 	            </div>
 	            <div id="main-branch-status" class="highlight" data-bind="text: mainBuild().status"></div>
                 <div id="main-branch-triggered-by">
