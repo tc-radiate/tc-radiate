@@ -18,7 +18,7 @@
     checkIntervalMs: 5000, //5000 ms = 5 seconds
 
     //How often to refresh the build image;
-    buildImageIntervalMs: 3600000, //3600000 ms = 1 hour
+    buildImageIntervalMs: 15/*mins*/ * 60*60,
 
     //use this to stop the screen from updating automatically e.g. if you manually refresh it.
     enableAutoUpdate: true,
