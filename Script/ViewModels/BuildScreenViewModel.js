@@ -2,8 +2,44 @@
     var self = this;
 
     self.isFirstLoad  = ko.observable(true);
-    self.builds       = ko.observableArray();
     self.buildTypes   = ko.observableArray();
+    self.projects     = ko.computed({
+        read: function () {
+            return _(self.buildTypes()).chain().groupBy(function (buildType) {
+                    return buildType.projectId;
+                }).mapObject(function (buildTypes, projectId) {
+                    return {
+                        projectId: projectId,
+                        projectName: buildTypes[0].projectName,
+                        buildTypes: buildTypes
+                    };
+                })
+                .value()
+                ;
+        },
+        deferEvaluation: true
+    });
+    var allBuildsFromApi = ko.observableArray();
+
+    self.builds = ko.computed({
+        read: function () {
+            var buildsByProductsWithDupesFiltered = _(self.projects()).chain().map(function(project) {
+                return _(project.buildTypes).map(function(buildType) {
+                    var buildsOfThisType = _(allBuildsFromApi()).filter(function (buildResult) { return buildResult.buildTypeId() === buildType.id; });
+                    var latestBuildsOfBranches = _(buildsOfThisType).chain().groupBy(function (buildResult) { return buildResult.branchName || ''; })
+                        .map(function(allBuildsInBranch) {
+                            return allBuildsInBranch[0];
+                        })
+                        .value();
+
+                    return latestBuildsOfBranches;
+                });
+            }).flatten().compact().value();
+            return buildsByProductsWithDupesFiltered;
+        },
+        deferEvaluation: true
+    });
+
     self.errorMessage = ko.observable();
     self.isLoading    = ko.observable(true);
     self.randomClass  = ko.observable(Utils.getRandomClass());
@@ -32,7 +68,7 @@
                 url: Settings.buildsUrl + Utils.getTsQSParam(),
                 xhrFields: {withCredentials: true},
                 success: function (data) {
-                          self.builds(ko.utils.arrayMap(data.build, function (build) {
+                          allBuildsFromApi(ko.utils.arrayMap(data.build, function (build) {
                               return new SingleBuildViewModel(build, self.buildTypes());
                           }));
                 

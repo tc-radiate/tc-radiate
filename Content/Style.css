@@ -85,7 +85,7 @@ ul {
     left: 0;
     width: 50%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
 	z-index:1;
 }
 
