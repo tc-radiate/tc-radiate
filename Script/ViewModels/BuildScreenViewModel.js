@@ -21,6 +21,8 @@
     });
     var allBuildsFromApi = ko.observableArray();
 
+    var buildFilterExcludeFunctions = ko.observableArray();
+
     self.builds = ko.computed({
         read: function () {
             var buildsByProductsWithDupesFiltered = _(self.projects()).chain().map(function(project) {
@@ -35,7 +37,9 @@
                     return latestBuildsOfBranches;
                 });
             }).flatten().compact().value();
-            return buildsByProductsWithDupesFiltered;
+            return _(buildsByProductsWithDupesFiltered).filter(function(build) {
+                return _(buildFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(build); }) === false;
+            });
         },
         deferEvaluation: true
     });
@@ -128,6 +132,18 @@
             self.isLoading(false);
         });
     };
+
+
+    self.addBuildFilterExclude = function (build) {
+        var buildToExcludeProps = {
+            branchName: build.branchName && build.branchName(),
+            buildTypeId: build.buildTypeId()
+        };
+
+        buildFilterExcludeFunctions.push(function (buildToTest) {
+            return ((!buildToExcludeProps.branchName && !buildToTest.branchName) || (buildToTest.branchName && buildToTest.branchName() === buildToExcludeProps.branchName)) && buildToTest.buildTypeId() === buildToExcludeProps.buildTypeId;
+        });
+    }
 
     self.init();
 };

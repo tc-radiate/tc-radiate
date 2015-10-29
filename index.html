@@ -10,8 +10,15 @@
 	<div class="page-content" data-bind="showHide: !isFirstLoad()">
 	    <div id="left-panel">
 	        <ul data-bind="foreach: { data: builds }">
-	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning() }">
-                    <div class="build-project"><span data-bind="text: buildType().projectName"></span> ></div>
+	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning() },
+                        event: {
+                            contextmenu: function () {
+                                if (confirm('Are you sure you want to stop monitoring this branch?'))
+                                    $root.addBuildFilterExclude($data);
+                            }
+                        }">
+	                <div class="build-project"><span data-bind="text: buildType().projectName"></span> >
+	                </div>
 	                <div class="build-type" data-bind="text: buildType"></div>
                     <!-- ko if: $data.branchName -->
 	                    <div class="build-branch"> > <i data-bind="text: branchName"></i> branch</div>
