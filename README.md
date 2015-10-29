@@ -1,3 +1,21 @@
+TravCorp's Radiator for TeamCity (based on tc-radiate)
+==========
+
+Working monitors
+-------------
+They're here: http://travcorp.github.io/tc-radiate/
+(use your own credentials or the [shared one](http://ttcwiki/display/itropics/Passwords+to+production#Passwordstoproduction-teamcitysharedaccount))
+
+Hacking the monitors:
+-------------
+Clone this repo, play with the code and make a pull request to the `gh-pages` branch. The above page will update automatically!
+
+
+
+**_Original readme from tc-radiate follows:_**
+
+-------------
+
 tc-radiate
 ==========
 A simple JavaScript build radiator for TeamCity
