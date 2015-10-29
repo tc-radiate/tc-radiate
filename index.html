@@ -11,9 +11,12 @@
 	    <div id="left-panel">
 	        <ul data-bind="foreach: { data: builds }">
 	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning() }">
-                    <div class="build-project" data-bind="text: buildType().projectName"></div>
-	                <div class="build-branch"  data-bind="text: description()"></div>
+                    <div class="build-project"><span data-bind="text: buildType().projectName"></span> ></div>
 	                <div class="build-type" data-bind="text: buildType"></div>
+                    <!-- ko if: $data.branchName -->
+	                    <div class="build-branch"> > <i data-bind="text: branchName"></i> branch</div>
+                    <!-- /ko -->
+                    <div class="build-number">#<span data-bind="text: number"></span> </div>
 	                <div class="clear"></div>
 	                <div class="build-status" data-bind="text: isRunning() ? '' : status"></div>
 	                <div class="clear"></div>
