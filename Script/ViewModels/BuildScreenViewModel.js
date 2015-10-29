@@ -18,7 +18,6 @@
     self.init = function () {
         self.isLoading(true);
         self.loadBuildTypes();
-        self.loadMainBuildStatus();
 
         //Load a new build image every so often just for fun
         setInterval(function () { self.randomClass(Utils.getRandomClass()); }, Settings.buildImageIntervalMs);
@@ -67,10 +66,20 @@
     };
 
     self.loadMainBuildStatus = function () {
+        if (!self.builds().length)
+            return;
+
+        var url = Settings.mainBranch ?
+            getBuildStatusUrlForBranch(Settings.mainBranch)
+            :
+            getBuildStatusUrlForBuildId((ko.utils.arrayFirst(self.builds(), function (build) {
+                return build.status() === 'FAILURE' && build.hasBranchName();
+            }) || self.builds()[0]).id());
+
         self.isLoading(true);
 		$.ajax({
                 dataType: "json",
-                url: Settings.buildStatusUrl + Utils.getTsQSParam(),
+                url: url + '?' + Utils.getTsQSParam(),
                 xhrFields: {withCredentials: true},
                 success: function (data) {
                     self.mainBuild(ko.mapping.fromJS(data, {
