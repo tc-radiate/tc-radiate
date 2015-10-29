@@ -217,12 +217,16 @@ ul {
     float: right;
 }
 
-.build-branch, .build-number {
+.build-project, .build-branch, .build-number {
     float: left;
 }
 
 .build-number { 
     padding-left: 15px;
+}
+
+.build-project { 
+    padding-right: 15px;
 }
 
 #main-branch-triggered-by {
