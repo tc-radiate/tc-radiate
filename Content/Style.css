@@ -213,11 +213,11 @@ ul {
     text-transform: uppercase;
 }
 
-.build-type, .build-status {
+.build-number, .build-status {
     float: right;
 }
 
-.build-project, .build-branch, .build-number {
+.build-project, .build-branch, .build-type {
     float: left;
 }
 
@@ -226,7 +226,11 @@ ul {
 }
 
 .build-project { 
-    padding-right: 15px;
+    padding-right: .2em;
+}
+
+.build-type {
+    padding-right: .2em;
 }
 
 #main-branch-triggered-by {
