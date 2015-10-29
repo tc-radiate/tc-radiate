@@ -3,8 +3,8 @@ TravCorp's Radiator for TeamCity (based on tc-radiate)
 
 Working monitors
 -------------
-They're here: http://travcorp.github.io/tc-radiate/
-(use your own credentials or the [shared one](http://ttcwiki/display/itropics/Passwords+to+production#Passwordstoproduction-teamcitysharedaccount))
+They're here: https://travcorp.github.io/tc-radiate/
+(use your own TeamCity credentials or the [shared one](http://ttcwiki/display/itropics/Passwords+to+production#Passwordstoproduction-teamcitysharedaccount))
 
 Hacking the monitors:
 -------------
