@@ -27,16 +27,22 @@
 
     self.loadAllBuilds = function () {
         self.isLoading(true);
-        $.getJSON(Settings.buildsUrl + Utils.getTsQSParam(), function (data) {
-            self.builds(ko.utils.arrayMap(data.build, function (build) {
-                return new SingleBuildViewModel(build, self.buildTypes());
-            }));
 
-            if (self.builds().length == 0)
-                self.errorMessage("There's no builds!? Better crack on with some work!");
-            else
-                self.errorMessage('');
-        }).always(function () {
+        $.ajax({
+                dataType: "json",
+                url: Settings.buildsUrl + Utils.getTsQSParam(),
+                xhrFields: {withCredentials: true},
+                success: function (data) {
+                          self.builds(ko.utils.arrayMap(data.build, function (build) {
+                              return new SingleBuildViewModel(build, self.buildTypes());
+                          }));
+                
+                          if (self.builds().length == 0)
+                              self.errorMessage("There's no builds!? Better crack on with some work!");
+                          else
+                              self.errorMessage('');
+                      }
+            }).always(function () {
             self.isLoading(false);
             self.loadMainBuildStatus();
             if (Settings.enableAutoUpdate)
@@ -48,21 +54,31 @@
 
     self.loadBuildTypes = function () {
         self.isLoading(true);
-        $.getJSON(Settings.buildTypesUrl, function (data) {
-            self.buildTypes(data.buildType);
-            self.loadAllBuilds();
-            self.isLoading(false);
-        });
+		$.ajax({
+                dataType: "json",
+                url: Settings.buildTypesUrl,
+                xhrFields: {withCredentials: true},
+                success: function (data) {
+                    self.buildTypes(data.buildType);
+                    self.loadAllBuilds();
+                    self.isLoading(false);
+                }
+            });
     };
 
     self.loadMainBuildStatus = function () {
         self.isLoading(true);
-        $.getJSON(Settings.buildStatusUrl + Utils.getTsQSParam(), function (data) {
-            self.mainBuild(ko.mapping.fromJS(data, {
-                create: function(options) {
-                    return new MainBuildViewModel(options.data, self.buildTypes());
+		$.ajax({
+                dataType: "json",
+                url: Settings.buildStatusUrl + Utils.getTsQSParam(),
+                xhrFields: {withCredentials: true},
+                success: function (data) {
+                    self.mainBuild(ko.mapping.fromJS(data, {
+                        create: function(options) {
+                            return new MainBuildViewModel(options.data, self.buildTypes());
+                        }
+                    }));
                 }
-            }));
         }).always(function (){
             self.isLoading(false);
         });
