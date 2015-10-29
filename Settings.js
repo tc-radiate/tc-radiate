@@ -36,7 +36,7 @@ var authType = Settings.useTeamCityGuest ? 'guestAuth' : 'httpAuth';
 
 Settings.restApiBaseUrl = Settings.proxy + Settings.teamCityUrl + '/' + authType + '/app/rest';
 //The url for the list of all builds on the left hand side of the screen
-Settings.buildsUrl = Settings.restApiBaseUrl + '/builds?locator=running:any,branch:branched:any,count:20';
+Settings.buildsUrl = Settings.restApiBaseUrl + '/builds?locator=running:any,branch:branched:any,count:200';
 
 //The url for the list of build types (used for mapping the build id (e.g. bt11) to the name (e.g. Website Tests)
 Settings.buildTypesUrl = Settings.restApiBaseUrl + '/buildTypes';
