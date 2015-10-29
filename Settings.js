@@ -2,8 +2,8 @@
     //The url that points to team city
     teamCityUrl: 'http://tclive:8111',
 
-    //The main branch to show the master build status on the right hand panel on the screen
-    mainBranch: 'develop',
+    //The main branch to show the master build status on the right hand panel on the screen. Leave empty to show the first failed one.
+    mainBranch: '',
 
     //Proxy to handle the cross domain ajax request.
     // This will need to be hosted on the relevant server e.g. proxy-node.js on Node.js or proxy-aspnet.ashx on IIS
@@ -33,11 +33,18 @@ var authType = Settings.useTeamCityGuest ? 'guestAuth' : 'httpAuth';
 //----------------------
 // TEAM CITY URLS
 //----------------------
+
+Settings.restApiBaseUrl = Settings.proxy + Settings.teamCityUrl + '/' + authType + '/app/rest';
 //The url for the list of all builds on the left hand side of the screen
-Settings.buildsUrl = Settings.proxy + Settings.teamCityUrl + '/'+authType+'/app/rest/builds?locator=running:any,branch:branched:any,count:20';
+Settings.buildsUrl = Settings.restApiBaseUrl + '/builds?locator=running:any,branch:branched:any,count:20';
 
 //The url for the list of build types (used for mapping the build id (e.g. bt11) to the name (e.g. Website Tests)
-Settings.buildTypesUrl = Settings.proxy + Settings.teamCityUrl + '/'+authType+'/app/rest/buildTypes';
+Settings.buildTypesUrl = Settings.restApiBaseUrl + '/buildTypes';
 
-//The url for the status of the build on the main branch
-Settings.buildStatusUrl = Settings.proxy + Settings.teamCityUrl + '/'+authType+'/app/rest/builds/branch:' + Settings.mainBranch + ',running:any,canceled:any?';
+function getBuildStatusUrlForBranch(branchName) {
+    return Settings.restApiBaseUrl + '/builds/branch:' + branchName + ',running:any,canceled:any';
+}
+
+function getBuildStatusUrlForBuildId(buildId) {
+    return Settings.restApiBaseUrl + '/builds/id:' + buildId;
+}
