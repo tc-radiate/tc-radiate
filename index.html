@@ -50,12 +50,14 @@
 	                    <!-- /ko -->
                         Build <span class="highlight" data-bind="text: number"></span>
 	                </div>
-                    <div id="main-branch-changed-by">
-                        <!-- ko if: triggeredBy -->
-                        triggered by <span class="highlight" data-bind="text: triggeredBy"></span>
-                        <!-- /ko -->
-                        <!-- ko if: issueId-->
-                        for YouTrack item <span data-bind="text: issueId" class="highlight"></span>
+                    <div id="main-branch-changed-by" data-bind="with: lastChanges">
+                        <!-- ko if: count -->
+                            Last changes by
+                            <ul data-bind="foreach: change">
+                                <!-- ko if: username -->
+                                <li><a data-bind="text: username, attr: { href: webUrl }"></a></li>
+                                <!-- /ko -->
+                            </ul>
                         <!-- /ko -->
                     </div>
                 <!-- /ko -->
