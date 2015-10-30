@@ -36,22 +36,24 @@
 	    <div id="right-panel">
 	        <!-- ko if: mainBuild() != null && mainBuild().status() != null -->
 	        <div id="main-build" data-bind="attr: { class: mainBuild().lowerStatus() + ' ' + randomClass() }">
-	            <div id="main-branch-name">
-	                <span data-bind="text: mainBuild().buildType.projectName"></span> > <span data-bind="text: mainBuild().buildType.name"></span> >
-	                <!-- ko if: mainBuild().hasBranchName() -->
-                    <span data-bind="text: mainBuild().branchName"></span> branch >
-	                <!-- /ko -->
-                    Build <span class="highlight" data-bind="text: mainBuild().number"></span>
-	            </div>
 	            <div id="main-branch-status" class="highlight" data-bind="text: mainBuild().status"></div>
-                <div id="main-branch-triggered-by">
-                    <!-- ko if: mainBuild().triggeredBy -->
-                    triggered by <span class="highlight" data-bind="text: mainBuild().triggeredBy"></span>
-                    <!-- /ko -->
-                    <!-- ko if: mainBuild().issueId-->
-                    for YouTrack item <span data-bind="text: mainBuild().issueId" class="highlight"></span>
-                    <!-- /ko -->
-                </div>
+                <!-- ko if: Settings.mainBranch || mainBuild().status() !== 'SUCCESS' -->
+	                <div id="main-branch-name">
+	                    <span data-bind="text: mainBuild().buildType.projectName"></span> > <span data-bind="text: mainBuild().buildType.name"></span> >
+	                    <!-- ko if: mainBuild().hasBranchName() -->
+                        <span data-bind="text: mainBuild().branchName"></span> branch >
+	                    <!-- /ko -->
+                        Build <span class="highlight" data-bind="text: mainBuild().number"></span>
+	                </div>
+                    <div id="main-branch-triggered-by">
+                        <!-- ko if: mainBuild().triggeredBy -->
+                        triggered by <span class="highlight" data-bind="text: mainBuild().triggeredBy"></span>
+                        <!-- /ko -->
+                        <!-- ko if: mainBuild().issueId-->
+                        for YouTrack item <span data-bind="text: mainBuild().issueId" class="highlight"></span>
+                        <!-- /ko -->
+                    </div>
+                <!-- /ko -->
 	        </div>
             <!-- /ko -->
 	    </div>
