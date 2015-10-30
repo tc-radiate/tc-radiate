@@ -55,10 +55,13 @@
                             Last changes by
                             <ul data-bind="foreach: change">
                                 <!-- ko if: username -->
-                                <li><a data-bind="text: username, attr: { href: webUrl }"></a></li>
+                                <li><a class="highlight" data-bind="text: username, attr: { href: webUrl }"></a></li>
                                 <!-- /ko -->
                             </ul>
                         <!-- /ko -->
+                    </div>
+                    <div id="main-branch-triggered-by" data-bind="if: !$data.lastChanges && $data.triggeredBy">
+                        Triggered by <a class="highlight" data-bind="text: triggeredBy, attr: { href: webUrl }"></a>
                     </div>
                 <!-- /ko -->
 	        </div>

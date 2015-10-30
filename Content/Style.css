@@ -232,7 +232,7 @@
     padding-right: .2em;
 }
 
-#main-branch-changed-by {
+#main-branch-changed-by, #main-branch-triggered-by {
     font-size: 2em;
     text-align: center;
 }
