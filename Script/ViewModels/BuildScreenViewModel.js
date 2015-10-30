@@ -113,6 +113,8 @@
             });
     };
 
+    var lastMainBuild = undefined;
+
     self.loadMainBuildStatus = function () {
         if (!self.builds().length)
             return;
@@ -129,7 +131,10 @@
                 dataType: "json",
                 url: url + '?' + Utils.getTsQSParam(),
                 xhrFields: {withCredentials: true},
-                success: function (data) {
+                success: function (data, status, xhr) {
+                    if (lastMainBuild === xhr.responseText)
+                        return;
+                    lastMainBuild = xhr.responseText;
                     self.mainBuild(ko.mapping.fromJS(data, {
                         create: function(options) {
                             return new MainBuildViewModel(options.data, self.buildTypes());
