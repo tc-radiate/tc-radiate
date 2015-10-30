@@ -204,7 +204,6 @@ ul {
 #main-branch-name {
     font-size: 2em;
     text-align: center;
-    text-transform: lowercase;
 }
 
 #main-branch-status {
