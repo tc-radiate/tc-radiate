@@ -2,8 +2,56 @@
     var self = this;
 
     self.isFirstLoad  = ko.observable(true);
-    self.builds       = ko.observableArray();
     self.buildTypes   = ko.observableArray();
+    self.projects     = ko.computed({
+        read: function () {
+            return _(self.buildTypes()).chain().groupBy(function (buildType) {
+                    return buildType.projectId;
+                }).mapObject(function (buildTypes, projectId) {
+                    return {
+                        projectId: projectId,
+                        projectName: buildTypes[0].projectName,
+                        buildTypes: buildTypes
+                    };
+                })
+                .value()
+                ;
+        },
+        deferEvaluation: true
+    });
+    var allBuildsFromApi = ko.observableArray();
+
+    var buildFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ 'buildFilterExcludeProperties_' + Settings.teamCityUrl);
+    var buildFilterExcludeFunctions = ko.computed(function () {
+        return _(buildFilterExcludeProperties()).map(function(buildToExcludeProps) {
+            return function(buildToTest) {
+                return ((!buildToExcludeProps.branchName && !buildToTest.branchName) || (buildToTest.branchName && buildToTest.branchName() === buildToExcludeProps.branchName)) && buildToTest.buildTypeId() === buildToExcludeProps.buildTypeId;
+            };
+        });
+
+    });
+
+    self.builds = ko.computed({
+        read: function () {
+            var buildsByProductsWithDupesFiltered = _(self.projects()).chain().map(function(project) {
+                return _(project.buildTypes).map(function(buildType) {
+                    var buildsOfThisType = _(allBuildsFromApi()).filter(function (buildResult) { return buildResult.buildTypeId() === buildType.id; });
+                    var latestBuildsOfBranches = _(buildsOfThisType).chain().groupBy(function (buildResult) { return buildResult.branchName || ''; })
+                        .map(function(allBuildsInBranch) {
+                            return allBuildsInBranch[0];
+                        })
+                        .value();
+
+                    return latestBuildsOfBranches;
+                });
+            }).flatten().compact().value();
+            return _(buildsByProductsWithDupesFiltered).filter(function(build) {
+                return _(buildFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(build); }) === false;
+            });
+        },
+        deferEvaluation: true
+    });
+
     self.errorMessage = ko.observable();
     self.isLoading    = ko.observable(true);
     self.randomClass  = ko.observable(Utils.getRandomClass());
@@ -18,7 +66,6 @@
     self.init = function () {
         self.isLoading(true);
         self.loadBuildTypes();
-        self.loadMainBuildStatus();
 
         //Load a new build image every so often just for fun
         setInterval(function () { self.randomClass(Utils.getRandomClass()); }, Settings.buildImageIntervalMs);
@@ -27,16 +74,22 @@
 
     self.loadAllBuilds = function () {
         self.isLoading(true);
-        $.getJSON(Settings.buildsUrl + Utils.getTsQSParam(), function (data) {
-            self.builds(ko.utils.arrayMap(data.build, function (build) {
-                return new SingleBuildViewModel(build, self.buildTypes());
-            }));
 
-            if (self.builds().length == 0)
-                self.errorMessage("There's no builds!? Better crack on with some work!");
-            else
-                self.errorMessage('');
-        }).always(function () {
+        $.ajax({
+                dataType: "json",
+                url: Settings.buildsUrl + Utils.getTsQSParam(),
+                xhrFields: {withCredentials: true},
+                success: function (data) {
+                          allBuildsFromApi(ko.utils.arrayMap(data.build, function (build) {
+                              return new SingleBuildViewModel(build, self.buildTypes());
+                          }));
+                
+                          if (self.builds().length == 0)
+                              self.errorMessage("There's no builds!? Better crack on with some work!");
+                          else
+                              self.errorMessage('');
+                      }
+            }).always(function () {
             self.isLoading(false);
             self.loadMainBuildStatus();
             if (Settings.enableAutoUpdate)
@@ -48,25 +101,60 @@
 
     self.loadBuildTypes = function () {
         self.isLoading(true);
-        $.getJSON(Settings.buildTypesUrl, function (data) {
-            self.buildTypes(data.buildType);
-            self.loadAllBuilds();
-            self.isLoading(false);
-        });
+		$.ajax({
+                dataType: "json",
+                url: Settings.buildTypesUrl,
+                xhrFields: {withCredentials: true},
+                success: function (data) {
+                    self.buildTypes(data.buildType);
+                    self.loadAllBuilds();
+                    self.isLoading(false);
+                }
+            });
     };
 
     self.loadMainBuildStatus = function () {
+        if (!self.builds().length)
+            return;
+
+        var url = Settings.mainBranch ?
+            getBuildStatusUrlForBranch(Settings.mainBranch)
+            :
+            getBuildStatusUrlForBuildId((ko.utils.arrayFirst(self.builds(), function (build) {
+                return build.status() === 'FAILURE';
+            }) || self.builds()[0]).id());
+
         self.isLoading(true);
-        $.getJSON(Settings.buildStatusUrl + Utils.getTsQSParam(), function (data) {
-            self.mainBuild(ko.mapping.fromJS(data, {
-                create: function(options) {
-                    return new MainBuildViewModel(options.data, self.buildTypes());
+		$.ajax({
+                dataType: "json",
+                url: url + '?' + Utils.getTsQSParam(),
+                xhrFields: {withCredentials: true},
+                success: function (data) {
+                    self.mainBuild(ko.mapping.fromJS(data, {
+                        create: function(options) {
+                            return new MainBuildViewModel(options.data, self.buildTypes());
+                        }
+                    }));
                 }
-            }));
         }).always(function (){
             self.isLoading(false);
         });
     };
+
+
+    self.excludedBuilds = {
+        get length() { return buildFilterExcludeProperties().length },
+        push: function (build) {
+            buildFilterExcludeProperties.push({
+                branchName: build.branchName && build.branchName(),
+                buildTypeId: build.buildTypeId()
+            });
+        },
+        removeAll: function() {
+            buildFilterExcludeProperties.removeAll();
+        }
+    };
+
 
     self.init();
 };

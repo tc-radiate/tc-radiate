@@ -10,7 +10,8 @@
             var buildType = ko.utils.arrayFirst(buildTypes, function (item) {
                 return item.id == buildTypeId;
             });
-            return buildType.name;
+            buildType.toString = function () { return buildType.name; };
+            return buildType;
         }, self);
     }
 });

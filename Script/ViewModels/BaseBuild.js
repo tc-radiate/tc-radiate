@@ -29,16 +29,5 @@
             else
                 return false;
         }, self);
-
-        self.description = ko.computed(function() {
-            var description = '';
-            if (this.branchName)
-                description += this.branchName() + ' branch - ';
-
-            if (this.number)
-                description += '#' + this.number()
-
-            return description;
-        }, self);
     }
 });

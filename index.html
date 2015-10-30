@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Builds</title>
+		<link href="Content/Style.css" rel="stylesheet" />
+    </head>
+<body>
+	<div class="page-loading" data-bind="showHide: isFirstLoad()"></div>
+	<div class="page-content" data-bind="showHide: !isFirstLoad()">
+	    <div id="left-panel">
+	        <ul data-bind="foreach: { data: builds }">
+	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning() },
+                        event: {
+                            contextmenu: function () {
+                                if (confirm('Are you sure you want to stop monitoring this branch?\n(Right click on the big picture to show them all again)'))
+                                    $root.excludedBuilds.push($data);
+                            }
+                        }">
+	                <div class="build-project"><span data-bind="text: buildType().projectName"></span> >
+	                </div>
+	                <div class="build-type" data-bind="text: buildType"></div>
+                    <!-- ko if: $data.branchName -->
+	                    <div class="build-branch"> > <i data-bind="text: branchName"></i> branch</div>
+                    <!-- /ko -->
+                    <div class="build-number">#<span data-bind="text: number"></span> </div>
+	                <div class="clear"></div>
+	                <div class="build-status" data-bind="text: isRunning() ? '' : status"></div>
+	                <div class="clear"></div>
+	                <!-- ko if: hasProgress() -->
+                       <div class="progress-container" data-bind="attr: { 'data-progress' : percentageComplete() }"></div>
+                    <!-- /ko -->
+	            </li>
+	        </ul>
+	    </div>
+	    <div id="right-panel" data-bind="event: {
+                            contextmenu: function () {
+                                if ($root.excludedBuilds.length && confirm('Are you sure you want to show all excluded branches?\n(Right click on a build to exclude it again)'))
+                                    $root.excludedBuilds.removeAll();
+                            }
+                        }">
+	        <!-- ko with: mainBuild -->
+	        <div id="main-build" data-bind="attr: { class: lowerStatus() + ' ' + $root.randomClass() }">
+	            <div id="main-branch-status" class="highlight" data-bind="text: status"></div>
+                <!-- ko if: Settings.mainBranch || status() !== 'SUCCESS' -->
+	                <div id="main-branch-name">
+	                    <span data-bind="text: buildType.projectName"></span> > <span data-bind="text: buildType.name"></span> >
+	                    <!-- ko if: branchName -->
+                        <span data-bind="text: branchName"></span> branch >
+	                    <!-- /ko -->
+                        Build <span class="highlight" data-bind="text: number"></span>
+	                </div>
+                    <div id="main-branch-changed-by" data-bind="with: lastChanges">
+                        <!-- ko if: count -->
+                            Last changes by
+                            <ul data-bind="foreach: change">
+                                <!-- ko if: username -->
+                                <li><a data-bind="text: username, attr: { href: webUrl }"></a></li>
+                                <!-- /ko -->
+                            </ul>
+                        <!-- /ko -->
+                    </div>
+                <!-- /ko -->
+	        </div>
+            <!-- /ko -->
+	    </div>
+
+	</div>
+    <div class="error-box" data-bind="showHide: hasError">
+        <div data-bind="text: errorMessage"></div>
+    </div>
+
+    <script src="Script/Libraries/underscore.js"></script>
+    <script src="Script/Libraries/knockout.js"></script>
+    <script src="Script/Libraries/knockout.mapping-2.4.1.js"></script>
+    <script src="Script/Libraries/jquery-2.0.0.min.js"></script>
+    <script src="Script/Libraries/jquery-ui.min.js"></script>
+    <script src="Script/Libraries/queryStringDecoder.js"></script>
+
+    <script src="Settings.js"></script>
+    <script src="Script/Init.js"></script>
+    <script src="Script/Utils.js"></script>
+
+    <script src="Script/Libraries/Class.js"></script>
+    <script src="Script/ViewModels/BaseBuild.js"></script>
+    <script src="Script/ViewModels/SingleBuildViewModel.js"></script>
+    <script src="Script/ViewModels/MainBuildViewModel.js"></script>
+    <script src="Script/ViewModels/BuildScreenViewModel.js"></script>
+</body>
+</html>
