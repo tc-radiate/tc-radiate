@@ -45,7 +45,7 @@
                 <!-- ko if: Settings.mainBranch || status() !== 'SUCCESS' -->
 	                <div id="main-branch-name">
 	                    <span data-bind="text: buildType.projectName"></span> > <span data-bind="text: buildType.name"></span> >
-	                    <!-- ko if: branchName -->
+	                    <!-- ko if: $data.branchName -->
                         <span data-bind="text: branchName"></span> branch >
 	                    <!-- /ko -->
                         Build <span class="highlight" data-bind="text: number"></span>
