@@ -50,7 +50,7 @@
 	                    <!-- /ko -->
                         Build <span class="highlight" data-bind="text: number"></span>
 	                </div>
-                    <div id="main-branch-changed-by" data-bind="with: lastChanges">
+                    <div id="main-branch-changed-by" data-bind="with: $data.lastChanges">
                         <!-- ko if: count -->
                             Last changes by
                             <ul data-bind="foreach: change">
