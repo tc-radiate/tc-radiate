@@ -19,12 +19,12 @@
 	background: url(images/loader.gif) no-repeat center center #fff;
 }
 
-ul {
+#left-panel ul {
     margin: 0;
     padding: 0;
 }
 
-    ul li {
+#left-panel ul li {
         list-style: none;
         background-color: grey;
         padding: 10px;
@@ -232,14 +232,30 @@ ul {
     padding-right: .2em;
 }
 
-#main-branch-triggered-by {
+#main-branch-changed-by {
     font-size: 2em;
     text-align: center;
 }
 
-#main-branch-name, #main-branch-triggered-by, #main-branch-status, ul li {
+#main-branch-name, #main-branch-changed-by, #main-branch-status, #left-panel ul li {
     -webkit-text-shadow: #000000 -3px 3px 4px;
     text-shadow: #000000 -3px 3px 4px;
+}
+
+#main-branch-changed-by ul {
+    list-style-type: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+#main-branch-changed-by li {
+    display: inline;
+}
+#main-branch-changed-by li:after {
+  content: ", ";
+}
+#main-branch-changed-by li:last-child:after {
+    content: "";
 }
 
 .progress-container {
