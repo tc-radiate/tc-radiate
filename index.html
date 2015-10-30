@@ -13,8 +13,8 @@
 	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning() },
                         event: {
                             contextmenu: function () {
-                                if (confirm('Are you sure you want to stop monitoring this branch?'))
-                                    $root.addBuildFilterExclude($data);
+                                if (confirm('Are you sure you want to stop monitoring this branch?\n(Right click on the big picture to show them all again)'))
+                                    $root.excludedBuilds.push($data);
                             }
                         }">
 	                <div class="build-project"><span data-bind="text: buildType().projectName"></span> >
@@ -33,7 +33,12 @@
 	            </li>
 	        </ul>
 	    </div>
-	    <div id="right-panel">
+	    <div id="right-panel" data-bind="event: {
+                            contextmenu: function () {
+                                if ($root.excludedBuilds.length && confirm('Are you sure you want to show all excluded branches?\n(Right click on a build to exclude it again)'))
+                                    $root.excludedBuilds.removeAll();
+                            }
+                        }">
 	        <!-- ko if: mainBuild() != null && mainBuild().status() != null -->
 	        <div id="main-build" data-bind="attr: { class: mainBuild().lowerStatus() + ' ' + randomClass() }">
 	            <div id="main-branch-status" class="highlight" data-bind="text: mainBuild().status"></div>
@@ -64,7 +69,7 @@
     </div>
 
     <script src="Script/Libraries/underscore.js"></script>
-    <script src="Script/Libraries/knockout-2.2.1.js"></script>
+    <script src="Script/Libraries/knockout.js"></script>
     <script src="Script/Libraries/knockout.mapping-2.4.1.js"></script>
     <script src="Script/Libraries/jquery-2.0.0.min.js"></script>
     <script src="Script/Libraries/jquery-ui.min.js"></script>

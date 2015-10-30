@@ -21,7 +21,15 @@
     });
     var allBuildsFromApi = ko.observableArray();
 
-    var buildFilterExcludeFunctions = ko.observableArray();
+    var buildFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ 'buildFilterExcludeProperties_' + Settings.teamCityUrl);
+    var buildFilterExcludeFunctions = ko.computed(function () {
+        return _(buildFilterExcludeProperties()).map(function(buildToExcludeProps) {
+            return function(buildToTest) {
+                return ((!buildToExcludeProps.branchName && !buildToTest.branchName) || (buildToTest.branchName && buildToTest.branchName() === buildToExcludeProps.branchName)) && buildToTest.buildTypeId() === buildToExcludeProps.buildTypeId;
+            };
+        });
+
+    });
 
     self.builds = ko.computed({
         read: function () {
@@ -134,16 +142,19 @@
     };
 
 
-    self.addBuildFilterExclude = function (build) {
-        var buildToExcludeProps = {
-            branchName: build.branchName && build.branchName(),
-            buildTypeId: build.buildTypeId()
-        };
+    self.excludedBuilds = {
+        get length() { return buildFilterExcludeProperties().length },
+        push: function (build) {
+            buildFilterExcludeProperties.push({
+                branchName: build.branchName && build.branchName(),
+                buildTypeId: build.buildTypeId()
+            });
+        },
+        removeAll: function() {
+            buildFilterExcludeProperties.removeAll();
+        }
+    };
 
-        buildFilterExcludeFunctions.push(function (buildToTest) {
-            return ((!buildToExcludeProps.branchName && !buildToTest.branchName) || (buildToTest.branchName && buildToTest.branchName() === buildToExcludeProps.branchName)) && buildToTest.buildTypeId() === buildToExcludeProps.buildTypeId;
-        });
-    }
 
     self.init();
 };
