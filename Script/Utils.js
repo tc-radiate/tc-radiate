@@ -11,7 +11,53 @@ var Utils = {
     //Used to append a timestamp to the url so the result isn't cached
     getTsQSParam : function() {
         return "&ts=" + new Date().toTimeString();
+    },
+    // So that you can 'Push' to it.
+    getObservableArrayBackedByStorage: function (storage, storageKey) {
+        var observableArray = ko.observableArray();
+
+        var objectStorageObservable = Utils.getObservableBackedByStorage(/*storage:*/ storage, /*storageKey:*/ storageKey, /*initialValue:*/[]);
+
+        observableArray(objectStorageObservable());
+
+        observableArray.subscribe(function(newValue) {
+            objectStorageObservable(newValue);
+        });
+
+        return observableArray;
+    },
+    getObservableBackedByStorage: function (storage, storageKey, initialValue) {
+        var objectSerializedToStringChangeTrigger = ko.observable();
+
+        var objectSerializedToString = ko.computed({
+            read: function () {
+                var value = storage.getItem(storageKey);
+                objectSerializedToStringChangeTrigger();
+                return value;
+            },
+            write: function (value) {
+                if (!value)
+                    storage.removeItem(storageKey);
+                else
+                    storage.setItem(storageKey, value);
+                objectSerializedToStringChangeTrigger(value);
+            }
+        });
+
+        var theObservable = ko.computed({
+            read: function () {
+                return JSON.parse(objectSerializedToString());
+            },
+            write: function (value) {
+                return objectSerializedToString(JSON.stringify(value));
+            }
+        });
+        if (localStorage.getItem(storageKey) === null)
+            theObservable(initialValue);
+
+        return theObservable;
     }
+
 };
 
 //----------------------
