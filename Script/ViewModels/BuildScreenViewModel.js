@@ -21,7 +21,7 @@
     });
     var allBuildsFromApi = ko.observableArray();
 
-    var buildFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ 'buildFilterExcludeProperties_' + Settings.teamCityUrl);
+    var buildFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ getAppStorageKey('buildFilterExcludeProperties'));
     var buildFilterExcludeFunctions = ko.computed(function () {
         return _(buildFilterExcludeProperties()).map(function(buildToExcludeProps) {
             return function(buildToTest) {
@@ -158,6 +158,11 @@
         removeAll: function() {
             buildFilterExcludeProperties.removeAll();
         }
+    };
+
+    self.audio = {
+        volume: Utils.getObservableBackedByStorage(window.localStorage, 'audio.volume', 1),
+        isMuted: Utils.getObservableBackedByStorage(window.localStorage, 'audio.isMuted', false)
     };
 
 

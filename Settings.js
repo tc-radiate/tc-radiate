@@ -48,3 +48,7 @@ function getBuildStatusUrlForBranch(branchName) {
 function getBuildStatusUrlForBuildId(buildId) {
     return Settings.restApiBaseUrl + '/builds/id:' + buildId;
 }
+
+function getAppStorageKey(storageKey) {
+    return Settings.teamCityUrl + '#' + storageKey; // Add the URL we're working against, so that it doesn't mix setting when this monitor is open from a local .html file (at least in Chrome, files in the same folder share their localStorage space).
+}

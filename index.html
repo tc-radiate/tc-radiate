@@ -43,7 +43,39 @@
 	        <div id="main-build" data-bind="attr: { class: lowerStatus() + ' ' + $root.randomClass() }">
 	            <div id="main-branch-status" class="highlight" data-bind="text: status"></div>
 	            <!-- ko if: Settings.mainBranch || status() !== 'SUCCESS' -->
-	            <audio controls data-bind="attr: { autoplay: true }"><source src="http://vignette2.wikia.nocookie.net/organizedcrimefiction/images/f/ff/Kill_Bill_%28Soundtrack%29_%28Vol.1%29_-_16_-_Ironside_%28excerpt%29_-_Quincy_Jones.ogg/revision/latest?cb=20140608063747"/></audio>
+	            <audio controls data-bind="
+                    attr: { autoplay: true },
+                    afterHtmlRender: function () {
+                        var soundInfo = Sounds.Failures.getRandom();
+                        if (soundInfo.time) {
+                            if (soundInfo.time.startSecond)
+                                $element.addEventListener('canplaythrough', function() {
+                                    if (soundInfo.url !== this.src)
+                                        return;
+                                    if (this.currentTime < soundInfo.time.startSecond)
+                                        this.currentTime = soundInfo.time.startSecond;
+                                  });
+                            if (soundInfo.time.endSecond)
+                                $element.addEventListener('timeupdate', function() {
+                                    if (soundInfo.url !== this.src)
+                                        return;
+                                    if (this.currentTime > soundInfo.time.endSecond)
+                                        this.pause();
+                                  });
+                        }
+                        $element.src = soundInfo.url;
+                        $element.volume = $root.audio.volume();
+                        $element.muted = $root.audio.isMuted();
+                    },
+                    event: {
+                        volumechange: function () { $root.audio.volume($element.volume); $root.audio.isMuted($element.muted); },
+                        error: function () {
+                            console.error({ message: 'Falling back to a local sound because of an error trying to play ' + $element.src, errorEventArgs: arguments });
+                            $element.src = Sounds.Failures.getRandomLocal().url;
+                        }
+                    },
+                ">
+	            </audio>
 	                <div id="main-branch-name">
 	                    <span data-bind="text: buildType.projectName"></span> > <span data-bind="text: buildType.name"></span> >
 	                    <!-- ko if: $data.branchName -->
@@ -76,6 +108,7 @@
 
     <script src="Script/Libraries/underscore.js"></script>
     <script src="Script/Libraries/knockout.js"></script>
+    <script src="Script/Libraries/knockout.bindings.afterHtmlRender.js"></script>
     <script src="Script/Libraries/knockout.mapping-2.4.1.js"></script>
     <script src="Script/Libraries/jquery-2.0.0.min.js"></script>
     <script src="Script/Libraries/jquery-ui.min.js"></script>
@@ -90,5 +123,7 @@
     <script src="Script/ViewModels/SingleBuildViewModel.js"></script>
     <script src="Script/ViewModels/MainBuildViewModel.js"></script>
     <script src="Script/ViewModels/BuildScreenViewModel.js"></script>
+    <script src="Script/SoundsApi.js"></script>
+    <script src="Content/sounds/!List.js"></script>
 </body>
 </html>
