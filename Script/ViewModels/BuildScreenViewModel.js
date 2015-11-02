@@ -21,7 +21,7 @@
     });
     var allBuildsFromApi = ko.observableArray();
 
-    var buildFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ 'buildFilterExcludeProperties_' + Settings.teamCityUrl);
+    var buildFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ getAppStorageKey('buildFilterExcludeProperties'));
     var buildFilterExcludeFunctions = ko.computed(function () {
         return _(buildFilterExcludeProperties()).map(function(buildToExcludeProps) {
             return function(buildToTest) {
@@ -113,6 +113,8 @@
             });
     };
 
+    var lastMainBuild = undefined;
+
     self.loadMainBuildStatus = function () {
         if (!self.builds().length)
             return;
@@ -129,7 +131,10 @@
                 dataType: "json",
                 url: url + '?' + Utils.getTsQSParam(),
                 xhrFields: {withCredentials: true},
-                success: function (data) {
+                success: function (data, status, xhr) {
+                    if (lastMainBuild === xhr.responseText)
+                        return;
+                    lastMainBuild = xhr.responseText;
                     self.mainBuild(ko.mapping.fromJS(data, {
                         create: function(options) {
                             return new MainBuildViewModel(options.data, self.buildTypes());
@@ -153,6 +158,11 @@
         removeAll: function() {
             buildFilterExcludeProperties.removeAll();
         }
+    };
+
+    self.audio = {
+        volume: Utils.getObservableBackedByStorage(window.localStorage, 'audio.volume', 1),
+        isMuted: Utils.getObservableBackedByStorage(window.localStorage, 'audio.isMuted', false)
     };
 
 
