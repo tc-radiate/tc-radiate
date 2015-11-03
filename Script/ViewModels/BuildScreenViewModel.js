@@ -1,25 +1,159 @@
 ﻿var BuildScreenViewModel = function () {
     var self = this;
 
-    self.isFirstLoad  = ko.observable(true);
-    self.buildTypes   = ko.observableArray();
-    self.projects     = ko.computed({
-        read: function () {
-            return _(self.buildTypes()).chain().groupBy(function (buildType) {
-                    return buildType.projectId;
-                }).mapObject(function (buildTypes, projectId) {
-                    return {
-                        projectId: projectId,
-                        projectName: buildTypes[0].projectName,
-                        buildTypes: buildTypes
-                    };
-                })
-                .value()
-                ;
-        },
-        deferEvaluation: true
+    function getNewDataModel() {
+        var buildTypes = (function () {
+            var isResultUpdate = false;
+            var buildTypesFromApi = ko.observable({ isLoadingPlaceholder: true });
+
+            var returnValue = ko.computed({
+                read: function () {
+                    if (!isResultUpdate) {
+                        $.ajax({
+                            dataType: "json",
+                            url: Settings.buildTypesUrl,
+                            xhrFields: { withCredentials: true },
+                            success: function (data) {
+                                try {
+                                    isResultUpdate = true;
+                                    buildTypesFromApi(data.buildType);
+                                } finally {
+                                    isResultUpdate = false;
+                                }
+                            }
+                        });
+                    }
+
+                    return buildTypesFromApi().isLoadingPlaceholder ? buildTypesFromApi() : _(buildTypesFromApi()).map(function (buildTypeFromApi) {
+                        buildTypeFromApi.branches = getBranchesForBuildTypeObservable(buildTypeFromApi);
+                        return buildTypeFromApi;
+                    });
+                },
+                deferEvaluation: true
+            });
+
+            returnValue.update = function() {
+                buildTypesFromApi([]);
+            };
+
+            return returnValue;
+        })();
+
+        function getBranchesForBuildTypeObservable(buildType) {
+            var branchesFromApi = ko.observable({ isLoadingPlaceholder: true });
+
+            var isResultUpdate = false;
+            return ko.computed({
+                read: function () {
+                    if (!isResultUpdate) {
+                        $.ajax({
+                            dataType: "json",
+                            url: Settings.buildTypesUrl + '/id:(' + buildType.id + ')' + '/branches?' + Utils.getTsQSParam(),
+                            xhrFields: { withCredentials: true },
+                            success: function (data) {
+                                try {
+                                    isResultUpdate = true;
+                                    var branches = [{ isNoBranchPlaceHolder: true }];
+                                    branches = branches.concat(data.branch);
+                                    branchesFromApi(branches);
+                                } finally {
+                                    isResultUpdate = false;
+                                }
+                            }
+                        });
+                    }
+
+                    return branchesFromApi().isLoadingPlaceholder ? branchesFromApi() : _(branchesFromApi()).map(function (branchFromApi) {
+                        branchFromApi.buildType = buildType;
+                        branchFromApi.builds = getBuildsForBranchObservable(branchFromApi);
+                        return branchFromApi;
+                    });
+                }
+            });
+        }
+
+        function getBuildsForBranchObservable(branch) {
+            var buildsFromApi = ko.observable({ isLoadingPlaceholder: true });
+
+            var isResultUpdate = false;
+            var builds = ko.computed({
+                read: function () {
+                    if (!isResultUpdate) {
+                        $.ajax({
+                            dataType: "json",
+                            url: Settings.buildsUrl + ',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:' + branch.name)) + '),count:1' + Utils.getTsQSParam(),
+                            xhrFields: { withCredentials: true },
+                            success: function (data) {
+                                try {
+                                    isResultUpdate = true;
+                                    buildsFromApi(data.build || []);
+                                } finally {
+                                    isResultUpdate = false;
+                                }
+                            }
+                        });
+                    }
+
+                    return buildsFromApi().isLoadingPlaceholder ? buildsFromApi() : ko.utils.arrayMap(buildsFromApi(), function (build) {
+                        return new SingleBuildViewModel(build, buildTypes());
+                    });
+                }
+            });
+            return builds;
+        }
+
+        var projects;
+
+        var allBuildsOfAllProjectsOrLoadingPlaceholders = ko.computed({
+            read: function () {
+                return projects().isLoadingPlaceholder ? [projects()] : (_(projects()).chain()
+                    .map(function (project) {
+                        return project.buildTypes.isLoadingPlaceholder ? project.buildTypes : _(project.buildTypes).map(function (buildType) {
+                            return buildType.branches().isLoadingPlaceholder ? buildType.branches() : _(buildType.branches()).map(function (branch) {
+                                return branch.builds();
+                            });
+                        });
+                    }).flatten().value());
+            },
+            deferEvaluation: true
+        });
+        return {
+            projects: projects = ko.computed({
+                read: function () {
+                    return buildTypes().isLoadingPlaceholder ? buildTypes() : _(buildTypes()).chain().groupBy(function (buildType) {
+                        return buildType.projectId;
+                    }).mapObject(function (buildTypes, projectId) {
+                        return {
+                            projectId: projectId,
+                            projectName: buildTypes[0].projectName,
+                            buildTypes: buildTypes
+                        };
+                    })
+                        .value()
+                    ;
+                },
+                deferEvaluation: true
+            }),
+            allLoadedBuildsOfAllProjects: ko.computed({
+                    read: function () {
+                        return allBuildsOfAllProjectsOrLoadingPlaceholders().filter(function (build) { return !build.isLoadingPlaceholder; });
+                    },
+                    deferEvaluation: true
+                }),
+            isInitializing: ko.computed({
+                read: function () {
+                    return !!_(allBuildsOfAllProjectsOrLoadingPlaceholders()).findWhere({ isLoadingPlaceholder: true });
+                },
+                deferEvaluation: true
+            })
+        };
+    };
+
+    var currentViewDataModel = ko.observable(getNewDataModel());
+
+    self.isFirstLoad = ko.computed(function() {
+        return currentViewDataModel().isInitializing();
     });
-    var allBuildsFromApi = ko.observableArray();
 
     var buildFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ getAppStorageKey('buildFilterExcludeProperties'));
     var buildFilterExcludeFunctions = ko.computed(function () {
@@ -31,122 +165,6 @@
 
     });
 
-    self.builds = ko.computed({
-        read: function () {
-            var buildsByProductsWithDupesFiltered = _(self.projects()).chain().map(function(project) {
-                return _(project.buildTypes).map(function(buildType) {
-                    var buildsOfThisType = _(allBuildsFromApi()).filter(function (buildResult) { return buildResult.buildTypeId() === buildType.id; });
-                    var latestBuildsOfBranches = _(buildsOfThisType).chain().groupBy(function (buildResult) { return buildResult.branchName || ''; })
-                        .map(function(allBuildsInBranch) {
-                            return allBuildsInBranch[0];
-                        })
-                        .value();
-
-                    return latestBuildsOfBranches;
-                });
-            }).flatten().compact().value();
-            return _(buildsByProductsWithDupesFiltered).filter(function(build) {
-                return _(buildFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(build); }) === false;
-            });
-        },
-        deferEvaluation: true
-    });
-
-    self.errorMessage = ko.observable();
-    self.isLoading    = ko.observable(true);
-    self.randomClass  = ko.observable(Utils.getRandomClass());
-    self.mainBuild    = ko.observable();
-
-    self.hasError = ko.computed(function () {
-        if (!this.errorMessage())
-            return false;
-        return this.errorMessage().length > 0;
-    }, self);
-
-    self.init = function () {
-        self.isLoading(true);
-        self.loadBuildTypes();
-
-        //Load a new build image every so often just for fun
-        setInterval(function () { self.randomClass(Utils.getRandomClass()); }, Settings.buildImageIntervalMs);
-
-    };
-
-    self.loadAllBuilds = function () {
-        self.isLoading(true);
-
-        $.ajax({
-                dataType: "json",
-                url: Settings.buildsUrl + Utils.getTsQSParam(),
-                xhrFields: {withCredentials: true},
-                success: function (data) {
-                          allBuildsFromApi(ko.utils.arrayMap(data.build, function (build) {
-                              return new SingleBuildViewModel(build, self.buildTypes());
-                          }));
-                
-                          if (self.builds().length == 0)
-                              self.errorMessage("There's no builds!? Better crack on with some work!");
-                          else
-                              self.errorMessage('');
-                      }
-            }).always(function () {
-            self.isLoading(false);
-            self.loadMainBuildStatus();
-            if (Settings.enableAutoUpdate)
-                setTimeout(self.loadAllBuilds, Settings.checkIntervalMs);
-            if (self.isFirstLoad())
-                self.isFirstLoad(false);
-        });
-    };
-
-    self.loadBuildTypes = function () {
-        self.isLoading(true);
-		$.ajax({
-                dataType: "json",
-                url: Settings.buildTypesUrl,
-                xhrFields: {withCredentials: true},
-                success: function (data) {
-                    self.buildTypes(data.buildType);
-                    self.loadAllBuilds();
-                    self.isLoading(false);
-                }
-            });
-    };
-
-    var lastMainBuild = undefined;
-
-    self.loadMainBuildStatus = function () {
-        if (!self.builds().length)
-            return;
-
-        var url = Settings.mainBranch ?
-            getBuildStatusUrlForBranch(Settings.mainBranch)
-            :
-            getBuildStatusUrlForBuildId((ko.utils.arrayFirst(self.builds(), function (build) {
-                return build.status() === 'FAILURE';
-            }) || self.builds()[0]).id());
-
-        self.isLoading(true);
-		$.ajax({
-                dataType: "json",
-                url: url + '?' + Utils.getTsQSParam(),
-                xhrFields: {withCredentials: true},
-                success: function (data, status, xhr) {
-                    if (lastMainBuild === xhr.responseText)
-                        return;
-                    lastMainBuild = xhr.responseText;
-                    self.mainBuild(ko.mapping.fromJS(data, {
-                        create: function(options) {
-                            return new MainBuildViewModel(options.data, self.buildTypes());
-                        }
-                    }));
-                }
-        }).always(function (){
-            self.isLoading(false);
-        });
-    };
-
-
     self.excludedBuilds = {
         get length() { return buildFilterExcludeProperties().length },
         push: function (build) {
@@ -155,16 +173,113 @@
                 buildTypeId: build.buildTypeId()
             });
         },
-        removeAll: function() {
+        removeAll: function () {
             buildFilterExcludeProperties.removeAll();
         }
     };
+
+    self.builds = ko.computed({
+        read: function () {
+            return _(currentViewDataModel().allLoadedBuildsOfAllProjects()).filter(function (build) {
+                return _(buildFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(build); }) === false;
+            });
+        },
+        deferEvaluation: true
+    });
+
+    self.mainBuild = (function () {
+        var isResultUpdate = false;
+        var lastMainBuild = undefined;
+
+        var mainBuildFromApi = ko.observable();
+        var lastBuildId;
+
+        ko.computed({
+            read: function () {
+                var url = null;
+                if (Settings.mainBranch)
+                    url = getBuildStatusUrlForBranch(Settings.mainBranch);
+                else {
+                    var buildId = self.builds().length && (ko.utils.arrayFirst(self.builds(), function (build) {
+                            return build.status() === 'FAILURE';
+                        }) || self.builds()[0]).id();
+                    if (!self.isFirstLoad() && buildId && buildId !== lastBuildId) {
+                        lastBuildId = buildId;
+                        url = getBuildStatusUrlForBuildId(buildId);
+                    }
+                }
+
+                if (url && !isResultUpdate) {
+                    $.ajax({
+                        dataType: "json",
+                        url: url + '?' + Utils.getTsQSParam(),
+                        xhrFields: { withCredentials: true },
+                        success: function (data, status, xhr) {
+                            try {
+                                isResultUpdate = true;
+                                if (lastMainBuild === xhr.responseText)
+                                    return;
+                                lastMainBuild = xhr.responseText;
+                                mainBuildFromApi(ko.mapping.fromJS(data, {
+                                    create: function (options) {
+                                        return new MainBuildViewModel(options.data);
+                                    }
+                                }));
+                            } finally {
+                                isResultUpdate = false;
+                            }
+                        }
+                    });
+                }
+
+                return mainBuildFromApi();
+            }
+        });
+        return mainBuildFromApi;
+    })();
+
 
     self.audio = {
         volume: Utils.getObservableBackedByStorage(window.localStorage, 'audio.volume', 1),
         isMuted: Utils.getObservableBackedByStorage(window.localStorage, 'audio.isMuted', false)
     };
 
+    self.errorMessage = ko.observable();
+
+    ko.computed(function () {
+        if (!self.isFirstLoad() && self.builds().length === 0)
+            self.errorMessage("There's no builds!? Better crack on with some work!");
+        else
+            self.errorMessage('');
+    });
+
+    self.randomClass = ko.observable(Utils.getRandomClass());
+
+    self.hasError = ko.computed(function () {
+        if (!this.errorMessage())
+            return false;
+        return this.errorMessage().length > 0;
+    }, self);
+
+    function update() {
+        var newDataModel = getNewDataModel();
+        newDataModel.isInitializing.subscribe(function (isInitializing) {
+            if (!isInitializing) {
+                currentViewDataModel(newDataModel);
+                ensureAutoUpdate();
+            }
+        });
+    }
+
+    function ensureAutoUpdate() {
+        if (Settings.enableAutoUpdate)
+            setTimeout(update, Settings.checkIntervalMs);
+    }
+
+    self.init = function () {
+        setInterval(function () { self.randomClass(Utils.getRandomClass()); }, Settings.buildImageIntervalMs);
+        ensureAutoUpdate();
+    };
 
     self.init();
 };

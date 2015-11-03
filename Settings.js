@@ -15,7 +15,7 @@
     useTeamCityGuest: false,
 
     //How often to call the TeamCity webservices and update the screen
-    checkIntervalMs: 5000, //5000 ms = 5 seconds
+    checkIntervalMs: 30/*sec*/ * 1000,
 
     //How often to refresh the build image;
     buildImageIntervalMs: 15/*mins*/ * 60*60 *1000,
@@ -36,7 +36,7 @@ var authType = Settings.useTeamCityGuest ? 'guestAuth' : 'httpAuth';
 
 Settings.restApiBaseUrl = Settings.proxy + Settings.teamCityUrl + '/' + authType + '/app/rest';
 //The url for the list of all builds on the left hand side of the screen
-Settings.buildsUrl = Settings.restApiBaseUrl + '/builds?locator=running:any,branch:branched:any,count:200';
+Settings.buildsUrl = Settings.restApiBaseUrl + '/builds?locator=running:any';
 
 //The url for the list of build types (used for mapping the build id (e.g. bt11) to the name (e.g. Website Tests)
 Settings.buildTypesUrl = Settings.restApiBaseUrl + '/buildTypes';

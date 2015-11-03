@@ -6,8 +6,8 @@
 		<link href="Content/Style.css" rel="stylesheet" />
     </head>
 <body>
-	<div class="page-loading" data-bind="showHide: isFirstLoad()"></div>
-	<div class="page-content" data-bind="showHide: !isFirstLoad()">
+	<div class="page-loading" data-bind="showHide: isFirstLoad() && !builds().length"></div>
+	<div class="page-content" data-bind="showHide: !isFirstLoad() || builds().length">
 	    <div id="left-panel">
 	        <ul data-bind="foreach: { data: builds }">
 	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning() },
@@ -39,6 +39,7 @@
                                     $root.excludedBuilds.removeAll();
                             }
                         }">
+            <div class="page-loading" data-bind="showHide: isFirstLoad()"></div>
 	        <!-- ko with: mainBuild -->
 	        <div id="main-build" data-bind="attr: { class: lowerStatus() + ' ' + $root.randomClass() }">
 	            <div id="main-branch-status" class="highlight" data-bind="text: status"></div>
@@ -76,29 +77,29 @@
                     },
                 ">
 	            </audio>
-	                <div id="main-branch-name">
-	                    <span data-bind="text: buildType.projectName"></span> > <span data-bind="text: buildType.name"></span> >
-	                    <!-- ko if: $data.branchName -->
-                        <span data-bind="text: branchName"></span> branch >
+	            <div id="main-branch-name">
+	                <span data-bind="text: buildType.projectName"></span> > <span data-bind="text: buildType.name"></span> >
+	                <!-- ko if: $data.branchName -->
+	                <span data-bind="text: branchName"></span> branch >
+	                <!-- /ko -->
+	                Build <span class="highlight" data-bind="text: number"></span>
+	            </div>
+	            <div id="main-branch-changed-by" data-bind="with: $data.lastChanges">
+	                <!-- ko if: count -->
+	                Last changes by
+	                <ul data-bind="foreach: change">
+	                    <!-- ko if: username -->
+	                    <li><a class="highlight" data-bind="text: username, attr: { href: webUrl }"></a></li>
 	                    <!-- /ko -->
-                        Build <span class="highlight" data-bind="text: number"></span>
-	                </div>
-                    <div id="main-branch-changed-by" data-bind="with: $data.lastChanges">
-                        <!-- ko if: count -->
-                            Last changes by
-                            <ul data-bind="foreach: change">
-                                <!-- ko if: username -->
-                                <li><a class="highlight" data-bind="text: username, attr: { href: webUrl }"></a></li>
-                                <!-- /ko -->
-                            </ul>
-                        <!-- /ko -->
-                    </div>
-                    <div id="main-branch-triggered-by" data-bind="if: !$data.lastChanges && $data.triggeredBy">
-                        Triggered by <a class="highlight" data-bind="text: triggeredBy, attr: { href: webUrl }"></a>
-                    </div>
-                <!-- /ko -->
+	                </ul>
+	                <!-- /ko -->
+	            </div>
+	            <div id="main-branch-triggered-by" data-bind="if: !$data.lastChanges && $data.triggeredBy">
+	                Triggered by <a class="highlight" data-bind="text: triggeredBy, attr: { href: webUrl }"></a>
+	            </div>
+	            <!-- /ko -->
 	        </div>
-            <!-- /ko -->
+	        <!-- /ko -->
 	    </div>
 
 	</div>
