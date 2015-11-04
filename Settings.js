@@ -14,13 +14,17 @@
     // ask the user for basic http credentials. Your browser may even offer you to save them.
     useTeamCityGuest: false,
 
-    //How often to call the TeamCity webservices and update the screen
-    checkIntervalMs: 30/*sec*/ * 1000,
+    //How often to refresh the whole page in order to update the application (to get all the latest changes without having to come to the monitor and refresh).
+    // Set to [0/undefined/null] to disable just this. Use enableAutoUpdate to disable this and any data updates.
+    appUpdateIntervalMs: 12 /*hr*/ * 60 * 60 * 1000,
+
+    //How often to call the TeamCity webservices and update the data on the screen
+    dataUpdateIntervalMs: 30/*sec*/ * 1000,
 
     //How often to refresh the build image;
-    buildImageIntervalMs: 15/*mins*/ * 60*60 *1000,
+    buildImageIntervalMs: 15/*min*/ * 60*60 *1000,
 
-    //use this to stop the screen from updating automatically e.g. if you manually refresh it.
+    //use this to stop the screen from updating automatically at all (disables both appUpdateIntervalMs and dataUpdateIntervalMs). You will need to manually refresh the page to get new data.
     enableAutoUpdate: true,
 }
 

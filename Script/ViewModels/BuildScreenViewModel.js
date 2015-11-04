@@ -274,24 +274,26 @@
         return this.errorMessage().length > 0;
     }, self);
 
-    function update() {
+    function updateData() {
         var newDataModel = getNewDataModel();
         newDataModel.isInitializing.subscribe(function (isInitializing) {
             if (!isInitializing) {
                 currentViewDataModel(newDataModel);
-                ensureAutoUpdate();
+                ensureDataAutoUpdate();
             }
         });
     }
 
-    function ensureAutoUpdate() {
+    function ensureDataAutoUpdate() {
         if (Settings.enableAutoUpdate)
-            setTimeout(update, Settings.checkIntervalMs);
+            setTimeout(updateData, Settings.dataUpdateIntervalMs);
     }
 
     self.init = function () {
         setInterval(function () { self.randomClass(Utils.getRandomClass()); }, Settings.buildImageIntervalMs);
-        ensureAutoUpdate();
+        ensureDataAutoUpdate();
+        if (Settings.enableAutoUpdate && Settings.appUpdateIntervalMs)
+            setTimeout(function() { location.reload(/*withoutCache*/ true); }, Settings.appUpdateIntervalMs);
     };
 
     self.init();
