@@ -180,9 +180,11 @@
 
     self.builds = ko.computed({
         read: function () {
-            return _(currentViewDataModel().allLoadedBuildsOfAllProjects()).filter(function (build) {
+            return _(currentViewDataModel().allLoadedBuildsOfAllProjects()).chain().filter(function (build) {
                 return _(buildFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(build); }) === false;
-            });
+            })
+            .sortBy(function (build) { return build.status() !== 'SUCCESS' ? (build.isRunning() ? 1 : 2) : (build.isRunning() ? 3 : 4); })
+            .value();
         },
         deferEvaluation: true
     });
