@@ -26,6 +26,11 @@
 
     //use this to stop the screen from updating automatically at all (disables both appUpdateIntervalMs and dataUpdateIntervalMs). You will need to manually refresh the page to get new data.
     enableAutoUpdate: true,
+    
+    //Only show builds for branches that satisfy the predicate
+    branchFilter: function(branch) {
+        return ["<default>", "master", "develop"].indexOf(branch.name) > -1;
+    }
 }
 
 //Allow the settings to be overridden by querystring parameters
