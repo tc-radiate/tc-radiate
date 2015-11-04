@@ -233,11 +233,15 @@
 
                                 timeOfLastNotifyOfMainBuild(data.startDate);
 
-                                mainBuildFromApi(ko.mapping.fromJS(data, {
-                                    create: function (options) {
+                                var mainBuildModel = ko.mapping.fromJS(data, {
+                                    create: function(options) {
                                         return new MainBuildViewModel(options.data);
                                     }
-                                }));
+                                });
+
+                                mainBuildModel.investigations = getInvestigationsForBuildType(data.buildTypeId);
+
+                                mainBuildFromApi(mainBuildModel);
                             } finally {
                                 isResultUpdate = false;
                             }
@@ -248,6 +252,34 @@
                 return mainBuildFromApi();
             }
         });
+
+        function getInvestigationsForBuildType(buildTypeId) {
+            var investigationsFromApi = ko.observable([]);
+            var isResultUpdate = false;
+            return ko.computed({
+                read: function () {
+                    if (!isResultUpdate) {
+                        $.ajax({
+                            dataType: "json",
+                            url: Settings.restApiBaseUrl + '/investigations?locator=buildType:(id:(' + buildTypeId + '))' + Utils.getTsQSParam(),
+                            xhrFields: { withCredentials: true },
+                            success: function (data) {
+                                try {
+                                    isResultUpdate = true;
+                                    investigationsFromApi(data.investigation);
+                                } finally {
+                                    isResultUpdate = false;
+                                }
+                            }
+                        });
+                    }
+
+                    return investigationsFromApi();
+                },
+                deferEvaluation: true
+            });
+
+        }
         return mainBuildFromApi;
     })();
 

@@ -86,10 +86,20 @@
 	                <!-- /ko -->
 	                Build <span class="highlight" data-bind="text: number"></span>
 	            </div>
+                <div id="main-branch-investigated-by" data-bind="with: $data.investigations">
+                    <!-- ko if: length -->
+                    Investigated by
+                    <ul class="inlineSentenceList" data-bind="foreach: $data">
+                        <!-- ko if: assignee.name -->
+                        <li><span class="highlight" data-bind="text: assignee.name"></span></li>
+                        <!-- /ko -->
+                    </ul>
+                    <!-- /ko -->
+                </div>
 	            <div id="main-branch-changed-by" data-bind="with: $data.lastChanges">
 	                <!-- ko if: count -->
 	                Last changes by
-	                <ul data-bind="foreach: change">
+	                <ul class="inlineSentenceList" data-bind="foreach: change">
 	                    <!-- ko if: username -->
 	                    <li><a class="highlight" data-bind="text: username, attr: { href: webUrl }"></a></li>
 	                    <!-- /ko -->
