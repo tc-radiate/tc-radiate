@@ -60,8 +60,10 @@
                                 $element.addEventListener('timeupdate', function() {
                                     if (soundInfo.url !== this.src)
                                         return;
-                                    if (this.currentTime > soundInfo.time.endSecond)
+                                    if (this.currentTime > soundInfo.time.endSecond) {
+                                        this.currentTime = 0;
                                         this.pause();
+                                    }
                                   });
                         }
                         $element.src = soundInfo.url;
