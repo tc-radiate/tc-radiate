@@ -81,7 +81,7 @@
                     if (!isResultUpdate) {
                         $.ajax({
                             dataType: "json",
-                            url: Settings.buildsUrl + ',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:' + branch.name)) + '),count:1' + Utils.getTsQSParam(),
+                            url: Settings.buildsUrl + ',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:' + branch.name)) + '),count:1&fields=build(id,buildTypeId,number,status,state,running,percentageComplete,branchName,href,webUrl,startDate)' + Utils.getTsQSParam(),
                             xhrFields: { withCredentials: true },
                             success: function (data) {
                                 try {
@@ -183,8 +183,9 @@
             return _(currentViewDataModel().allLoadedBuildsOfAllProjects()).chain().filter(function (build) {
                 return _(buildFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(build); }) === false;
             })
-            .sortBy(function (build) { return build.status() !== 'SUCCESS' ? (build.isRunning() ? 1 : 2) : (build.isRunning() ? 3 : 4); })
-            .value();
+            .sortBy(function (build) { return (build.status() !== 'SUCCESS' ? (build.isRunning() ? 4 : 3) : (build.isRunning() ? 2 : 1)) + '_' + build.startDate(); })
+            .value()
+            .reverse();
         },
         deferEvaluation: true
     });
@@ -202,7 +203,7 @@
                 if (Settings.mainBranch)
                     url = getBuildStatusUrlForBranch(Settings.mainBranch);
                 else {
-                    var buildId = self.builds().length && (ko.utils.arrayFirst(self.builds(), function (build) {
+                    var buildId = self.builds().length && (_(self.builds()).find(function (build) {
                             return build.status() === 'FAILURE';
                         }) || self.builds()[0]).id();
                     if (!self.isFirstLoad() && buildId && buildId !== lastBuildId) {
