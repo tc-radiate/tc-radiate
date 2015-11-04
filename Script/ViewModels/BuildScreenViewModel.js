@@ -197,6 +197,11 @@
         var mainBuildFromApi = ko.observable();
         var lastBuildId;
 
+        var timeOfLastNotifyOfMainBuild = Utils.getObservableBackedByStorage(
+            /*storage:*/ window.sessionStorage, // So that refreshing the same tab doesn't makes us notify again (e.g. play the sound), but if we restart the browser or use a new tab, we get fresh notifications.
+            /*storageKey:*/ 'timeOfLastNotifyOfMainBuild'
+            );
+
         ko.computed({
             read: function () {
                 var url = null;
@@ -223,6 +228,11 @@
                                 if (lastMainBuild === xhr.responseText)
                                     return;
                                 lastMainBuild = xhr.responseText;
+
+                                data.isNew = !timeOfLastNotifyOfMainBuild() || (data.startDate > timeOfLastNotifyOfMainBuild());
+
+                                timeOfLastNotifyOfMainBuild(data.startDate);
+
                                 mainBuildFromApi(ko.mapping.fromJS(data, {
                                     create: function (options) {
                                         return new MainBuildViewModel(options.data);

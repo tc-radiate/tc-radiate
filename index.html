@@ -45,7 +45,7 @@
 	            <div id="main-branch-status" class="highlight" data-bind="text: status"></div>
 	            <!-- ko if: Settings.mainBranch || status() !== 'SUCCESS' -->
 	            <audio controls data-bind="
-                    attr: { autoplay: true },
+                    attr: { autoplay: isNew },
                     afterHtmlRender: function () {
                         var soundInfo = Sounds.Failures.getRandom();
                         if (soundInfo.time) {
