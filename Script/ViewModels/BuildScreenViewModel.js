@@ -67,6 +67,8 @@
                         branchFromApi.buildType = buildType;
                         branchFromApi.builds = getBuildsForBranchObservable(branchFromApi);
                         return branchFromApi;
+                    }).filter(function(branchFromApi) {
+                        return ["<default>", "master", "develop"].indexOf(branchFromApi.name) > -1;
                     });
                 }
             });
