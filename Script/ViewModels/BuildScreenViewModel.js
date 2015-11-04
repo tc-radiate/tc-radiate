@@ -298,7 +298,14 @@
             self.errorMessage('');
     });
 
-    self.randomClass = ko.observable(Utils.getRandomClass());
+    var randomSeed = ko.observable(Math.random());
+
+    self.getImageForStatus = function(status) {
+        return ko.computed(function() {
+            randomSeed();
+            return Images[status].getRandom();
+        });
+    }
 
     self.hasError = ko.computed(function () {
         if (!this.errorMessage())
@@ -322,7 +329,7 @@
     }
 
     self.init = function () {
-        setInterval(function () { self.randomClass(Utils.getRandomClass()); }, Settings.buildImageIntervalMs);
+        setInterval(function () { randomSeed(Math.random()); }, Settings.buildImageIntervalMs);
         ensureDataAutoUpdate();
         if (Settings.enableAutoUpdate && Settings.appUpdateIntervalMs)
             setTimeout(function() { location.reload(/*withoutCache*/ true); }, Settings.appUpdateIntervalMs);

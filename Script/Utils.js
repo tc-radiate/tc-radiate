@@ -3,9 +3,9 @@
 //----------------------
 var Utils = {
 
-    //Returns one of 11 random images for the buid success or fail image
-    getRandomClass : function() {
-        return 'c' + Math.floor(Math.random() * 11);
+    isUrlAbsolute: function (url) {
+        // Source: http://stackoverflow.com/questions/10687099/how-to-test-if-a-url-string-is-absolute-or-relative
+        return /^https?:\/\//i.test(url);
     },
 
     //Used to append a timestamp to the url so the result isn't cached

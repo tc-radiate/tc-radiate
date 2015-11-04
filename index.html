@@ -41,7 +41,7 @@
                         }">
             <div class="page-loading" data-bind="showHide: isFirstLoad()"></div>
 	        <!-- ko with: mainBuild -->
-	        <div id="main-build" data-bind="attr: { class: lowerStatus() + ' ' + $root.randomClass() }">
+	        <div id="main-build" data-bind="css: lowerStatus, attr: { style: 'background-image: url(' + $root.getImageForStatus(lowerStatus())() + ')' }">
 	            <div id="main-branch-status" class="highlight" data-bind="text: status"></div>
 	            <!-- ko if: Settings.mainBranch || status() !== 'SUCCESS' -->
 	            <audio controls data-bind="
@@ -138,5 +138,7 @@
     <script src="Script/ViewModels/BuildScreenViewModel.js"></script>
     <script src="Script/SoundsApi.js"></script>
     <script src="Content/sounds/!List.js"></script>
+    <script src="Script/ImagesApi.js"></script>
+    <script src="Content/images/!List.js"></script>
 </body>
 </html>
