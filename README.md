@@ -26,13 +26,12 @@ Please feel free to fork and hack away at the code.
 
 Configuration
 -------------
-To configure tc-radiate with your own TeamCity server go to 'Settings.js' and edit the relevant variables.
-
-Configuration settings can be overridden using query strings e.g. http://mybuildscreenurl/?mainBranch=exampleBranchName
+1. To configure tc-radiate with your own TeamCity server go to 'Settings.js' and edit the relevant variables.
+2. Set your TeamCity to allow cross-domain requests from the domain where you host the monitor (see [TeamCity Doc](https://confluence.jetbrains.com/display/TCD9/REST+API#RESTAPI-CORSSupport)). Alternatively, use a [Proxy](#proxy).
 
 Proxy
 -----
-A proxy is required to request the team city web services. This is because javascript won't let you do a cross domain request in most browsers. All the proxy needs to to is request the web service on behalf of the JavaScript whilst running on the same domain.
+It is not advised, but i you don't set up CORS in teamcity (see [Configuration](#configuration)), a proxy web application will be required to request the team city web services. This is because the browser won't let the monitor read a cross domain request. All the proxy needs to to is request the web service on behalf of the JavaScript whilst running on the same domain.
 
-In the 'proxies' folder there is an example of a an ASP.NET proxy which needs to be ran on IIS, i'll try add more examples in other languages when i get the chance.
+In the 'proxies' folder there is an example of a an ASP.NET proxy which needs to be ran on IIS.
 If you want to use this, just copy it into the root tc-radiate folder and hook the folder up to an IIS website.
