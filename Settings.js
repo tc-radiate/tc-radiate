@@ -29,7 +29,7 @@
     
     //Only show builds for branches that satisfy the predicate
     branchFilter: function(branch) {
-        return ["<default>", "master", "develop"].indexOf(branch.name) > -1;
+        return ["<default>", "master", "develop", "refs/heads/develop", "refs/heads/master"].indexOf(branch.name) > -1;
     }
 }
 
