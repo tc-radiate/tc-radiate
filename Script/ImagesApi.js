@@ -20,7 +20,7 @@
         List: ko.computed({ read: function () { return Images.success.CodeDefinedList.concat(Images.success.BrowserLocalList()) }, deferEvaluation: true }),
 
         getRandom: function () {
-            return Images._getRandom(Images.unknown.List());
+            return Images._getRandom(Images.success.List());
         },
     },
 
