@@ -41,75 +41,85 @@
                         }">
             <div class="page-loading" data-bind="showHide: isFirstLoad()"></div>
 	        <!-- ko with: mainBuild -->
-	        <div id="main-build" data-bind="css: lowerStatus, attr: { style: 'background-image: url(' + $root.getImageForStatus(lowerStatus())() + ')' }">
-	            <div id="main-branch-status" class="highlight" data-bind="text: status"></div>
-	            <!-- ko if: Settings.mainBranch || status() !== 'SUCCESS' -->
-	            <audio controls data-bind="
-                    attr: { autoplay: isNew },
-                    afterHtmlRender: function () {
-                        var soundInfo = Sounds.Failures.getRandom();
-                        if (soundInfo.time) {
-                            if (soundInfo.time.startSecond)
-                                $element.addEventListener('canplaythrough', function() {
-                                    if (soundInfo.url !== this.src)
-                                        return;
-                                    if (this.currentTime < soundInfo.time.startSecond)
-                                        this.currentTime = soundInfo.time.startSecond;
-                                  });
-                            if (soundInfo.time.endSecond)
-                                $element.addEventListener('timeupdate', function() {
-                                    if (soundInfo.url !== this.src)
-                                        return;
-                                    if (this.currentTime > soundInfo.time.endSecond) {
-                                        this.currentTime = 0;
-                                        this.pause();
-                                    }
-                                  });
-                        }
-                        $element.src = soundInfo.url;
-                        $element.volume = $root.audio.volume();
-                        $element.muted = $root.audio.isMuted();
-                    },
+	        <div id="main-build" data-bind="css: lowerStatus">
+	            <img data-bind="
+                    attr: { src: $root.getImageForStatus(lowerStatus()) },
                     event: {
-                        volumechange: function () { $root.audio.volume($element.volume); $root.audio.isMuted($element.muted); },
                         error: function () {
-                            console.error({ message: 'Falling back to a local sound because of an error trying to play ' + $element.src, errorEventArgs: arguments });
-                            $element.src = Sounds.Failures.getRandomLocal().url;
+                            console.error({ message: 'Possibly need to change a link to an image. Falling back to a different image because of an error trying to display ' + $element.src, errorEventArgs: arguments });
+                            $element.src = ''; $element.src = $root.getImageForStatus(lowerStatus())();
                         }
-                    },
-                ">
-	            </audio>
-	            <div id="main-branch-name">
-	                <span data-bind="text: buildType.projectName"></span> > <span data-bind="text: buildType.name"></span> >
-	                <!-- ko if: $data.branchName -->
-	                <span data-bind="text: branchName"></span> branch >
-	                <!-- /ko -->
-	                Build <span class="highlight" data-bind="text: number"></span>
-	            </div>
-                <div id="main-branch-investigated-by" data-bind="with: $data.investigations">
-                    <!-- ko if: length -->
-                    Investigated by
-                    <ul class="inlineSentenceList" data-bind="foreach: $data">
-                        <!-- ko if: assignee.name -->
-                        <li><span class="highlight" data-bind="text: assignee.name"></span></li>
+                    }
+                    " style="bottom: 0; position: absolute; margin-left: auto; margin-right: auto; left: 0; right: 0;"/>
+                <div style="position: absolute; margin-left: auto; margin-right: auto; left: 0; right: 0;">
+                    <div id="main-branch-status" class="highlight" data-bind="text: status"></div>
+                    <!-- ko if: Settings.mainBranch || status() !== 'SUCCESS' -->
+                    <audio controls data-bind="
+                        attr: { autoplay: isNew },
+                        afterHtmlRender: function () {
+                            var soundInfo = Sounds.Failures.getRandom();
+                            if (soundInfo.time) {
+                                if (soundInfo.time.startSecond)
+                                    $element.addEventListener('canplaythrough', function() {
+                                        if (soundInfo.url !== this.src)
+                                            return;
+                                        if (this.currentTime < soundInfo.time.startSecond)
+                                            this.currentTime = soundInfo.time.startSecond;
+                                      });
+                                if (soundInfo.time.endSecond)
+                                    $element.addEventListener('timeupdate', function() {
+                                        if (soundInfo.url !== this.src)
+                                            return;
+                                        if (this.currentTime > soundInfo.time.endSecond) {
+                                            this.currentTime = 0;
+                                            this.pause();
+                                        }
+                                      });
+                            }
+                            $element.src = soundInfo.url;
+                            $element.volume = $root.audio.volume();
+                            $element.muted = $root.audio.isMuted();
+                        },
+                        event: {
+                            volumechange: function () { $root.audio.volume($element.volume); $root.audio.isMuted($element.muted); },
+                            error: function () {
+                                console.error({ message: 'Possibly need to change link to a sound. Falling back to a local sound because of an error trying to play ' + $element.src, errorEventArgs: arguments });
+                                $element.src = Sounds.Failures.getRandomLocal().url;
+                            }
+                        },
+                    "></audio>
+                    <div id="main-branch-name">
+                        <span data-bind="text: buildType.projectName"></span> > <span data-bind="text: buildType.name"></span> >
+                        <!-- ko if: $data.branchName -->
+                        <span data-bind="text: branchName"></span> branch >
                         <!-- /ko -->
-                    </ul>
+                        Build <span class="highlight" data-bind="text: number"></span>
+                    </div>
+                    <div id="main-branch-investigated-by" data-bind="with: $data.investigations">
+                        <!-- ko if: length -->
+                        Investigated by
+                        <ul class="inlineSentenceList" data-bind="foreach: $data">
+                            <!-- ko if: assignee.name -->
+                            <li><span class="highlight" data-bind="text: assignee.name"></span></li>
+                            <!-- /ko -->
+                        </ul>
+                        <!-- /ko -->
+                    </div>
+                    <div id="main-branch-changed-by" data-bind="with: $data.lastChanges">
+                        <!-- ko if: count -->
+                        Last changes by
+                        <ul class="inlineSentenceList" data-bind="foreach: change">
+                            <!-- ko if: username -->
+                            <li><a class="highlight" data-bind="text: username, attr: { href: webUrl }"></a></li>
+                            <!-- /ko -->
+                        </ul>
+                        <!-- /ko -->
+                    </div>
+                    <div id="main-branch-triggered-by" data-bind="if: !$data.lastChanges && $data.triggeredBy">
+                        Triggered by <a class="highlight" data-bind="text: triggeredBy, attr: { href: webUrl }"></a>
+                    </div>
                     <!-- /ko -->
                 </div>
-	            <div id="main-branch-changed-by" data-bind="with: $data.lastChanges">
-	                <!-- ko if: count -->
-	                Last changes by
-	                <ul class="inlineSentenceList" data-bind="foreach: change">
-	                    <!-- ko if: username -->
-	                    <li><a class="highlight" data-bind="text: username, attr: { href: webUrl }"></a></li>
-	                    <!-- /ko -->
-	                </ul>
-	                <!-- /ko -->
-	            </div>
-	            <div id="main-branch-triggered-by" data-bind="if: !$data.lastChanges && $data.triggeredBy">
-	                Triggered by <a class="highlight" data-bind="text: triggeredBy, attr: { href: webUrl }"></a>
-	            </div>
-	            <!-- /ko -->
 	        </div>
 	        <!-- /ko -->
 	    </div>

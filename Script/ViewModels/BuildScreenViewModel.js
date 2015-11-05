@@ -298,11 +298,11 @@
             self.errorMessage('');
     });
 
-    var randomSeed = ko.observable(Math.random());
+    var imageUpdateTickSource = ko.observable();
 
     self.getImageForStatus = function(status) {
         return ko.computed(function() {
-            randomSeed();
+            imageUpdateTickSource();
             return Images[status].getRandom();
         });
     }
@@ -329,7 +329,7 @@
     }
 
     self.init = function () {
-        setInterval(function () { randomSeed(Math.random()); }, Settings.buildImageIntervalMs);
+        setInterval(function () { imageUpdateTickSource(!imageUpdateTickSource()); }, Settings.buildImageIntervalMs);
         ensureDataAutoUpdate();
         if (Settings.enableAutoUpdate && Settings.appUpdateIntervalMs)
             setTimeout(function() { location.reload(/*withoutCache*/ true); }, Settings.appUpdateIntervalMs);
