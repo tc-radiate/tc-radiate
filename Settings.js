@@ -22,16 +22,16 @@
     dataUpdateIntervalMs: 30/*sec*/ * 1000,
 
     //How often to refresh the build image;
-    buildImageIntervalMs: 15/*min*/ * 60*60 *1000,
+    buildImageIntervalMs: 15/*min*/ * 60 * 60 * 1000,
 
     //use this to stop the screen from updating automatically at all (disables both appUpdateIntervalMs and dataUpdateIntervalMs). You will need to manually refresh the page to get new data.
     enableAutoUpdate: true,
-    
+
     //Only show builds for branches that satisfy the predicate
     branchFilter: function(branch) {
         return ["<default>", "master", "develop", "refs/heads/develop", "refs/heads/master"].indexOf(branch.name) > -1;
     }
-}
+};
 
 //Allow the settings to be overridden by querystring parameters
 //(url parameters are currently only treated as strings)
