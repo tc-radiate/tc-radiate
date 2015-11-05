@@ -1,6 +1,6 @@
 ﻿Images.failure.CodeDefinedList = [
 
-    // Local sounds from this folder.
+    // Local files from this folder.
     'angry1.png',
     'angry2.png',
     'angry3.png',
@@ -20,7 +20,6 @@
 
 Images.success.CodeDefinedList = [
 
-    // Local sounds from this folder.
     'happy1.png',
     'happy2.png',
     'happy3.png',
@@ -35,7 +34,6 @@ Images.success.CodeDefinedList = [
 
 Images.unknown.CodeDefinedList = [
 
-    // Local sounds from this folder.
     'unknown1.png',
     'unknown2.png',
 ];
