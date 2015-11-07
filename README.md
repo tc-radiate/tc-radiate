@@ -31,7 +31,4 @@ Configuration
 
 Proxy
 -----
-It is not advised, but i you don't set up CORS in teamcity (see [Configuration](#configuration)), a proxy web application will be required to request the team city web services. This is because the browser won't let the monitor read a cross domain request. All the proxy needs to to is request the web service on behalf of the JavaScript whilst running on the same domain.
-
-In the 'proxies' folder there is an example of a an ASP.NET proxy which needs to be ran on IIS.
-If you want to use this, just copy it into the root tc-radiate folder and hook the folder up to an IIS website.
+This is not advised if you can set up CORS in TeamCity (see [Configuration](#configuration)), but in the absence of other choice you can use a proxy web application to request the TeamCity web services. In the 'proxies' folder there is an example of a an ASP.NET proxy which needs to be ran on IIS. If you want to use this, just copy it into the root tc-radiate folder and hook the folder up to an IIS website.
