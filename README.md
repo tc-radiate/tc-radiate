@@ -10,6 +10,7 @@ Hacking the monitors:
 -------------
 Clone this repo, play with the code and make a pull request to the `gh-pages` branch. The above page will update automatically!
 
+To test your changes on your local machine, you need to open the index.html file in a browser with disabled cross-domain security. In the [main folder](https://github.com/travcorp/tc-radiate) there are open-in-*-for-local-development.cmd files, which help you to do this. Please read and follow instructions displayed during execution.
 
 
 **_Original readme from tc-radiate follows:_**
