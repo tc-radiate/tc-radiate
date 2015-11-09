@@ -21,7 +21,7 @@
 	                </div>
 	                <div class="build-type" data-bind="text: buildType"></div>
                     <!-- ko if: $data.branchName -->
-	                    <div class="build-branch"> > <i data-bind="text: branchName"></i> branch</div>
+	                    <div class="build-branch"> > <i class="build-branch-name" data-bind="text: branchName"></i> branch</div>
                     <!-- /ko -->
                     <div class="build-number">#<span data-bind="text: number"></span> </div>
 	                <div class="clear"></div>
@@ -89,11 +89,11 @@
                         },
                     "></audio>
                     <div id="main-branch-name">
-                        <span data-bind="text: buildType.projectName"></span> > <span data-bind="text: buildType.name"></span> >
+                        <span class="build-project" data-bind="text: buildType.projectName"></span> > <span class="build-type" data-bind="text: buildType.name"></span> >
                         <!-- ko if: $data.branchName -->
-                        <span data-bind="text: branchName"></span> branch >
+                        <span class="build-branch"><i class="build-branch-name" data-bind="text: branchName"></i> branch</span> >
                         <!-- /ko -->
-                        Build <span class="highlight" data-bind="text: number"></span>
+                        Build <span class="build-number" class="highlight" data-bind="text: number"></span>
                     </div>
                     <div id="main-branch-investigated-by" data-bind="with: $data.investigations">
                         <!-- ko if: length -->

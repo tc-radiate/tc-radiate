@@ -112,34 +112,59 @@
 }
 
 #main-branch-status {
-    font-size: 6em;
+    font-size: 4em;
     text-align: center;
     text-transform: uppercase;
 }
 
-.build-number, .build-status {
+#left-panel {
+    font-size: 1.5em;
+}
+
+#left-panel .build-number, #left-panel .build-status {
     float: right;
 }
 
-.build-project, .build-branch, .build-type {
+#left-panel .build-project, #left-panel .build-branch, #left-panel .build-type {
     float: left;
 }
 
-.build-number { 
+#left-panel .build-number { 
     padding-left: 15px;
 }
 
-.build-project { 
+#left-panel .build-project { 
     padding-right: .2em;
 }
 
-.build-type {
+#left-panel .build-type {
     padding-right: .2em;
 }
 
 #main-branch-changed-by, #main-branch-triggered-by, #main-branch-investigated-by {
     font-size: 2em;
     text-align: center;
+}
+
+
+#main-branch-name .build-project {
+    font-size: 2.5em;
+    white-space: nowrap;
+}
+
+#main-branch-name .build-type {
+    font-size: 2.1em;
+    white-space: nowrap;
+}
+
+#main-branch-name .build-branch {
+    font-size: 1.5em;
+    white-space: nowrap;
+}
+
+#main-branch-name .build-number {
+    font-size: 1em;
+    white-space: nowrap;
 }
 
 #main-branch-name, #main-branch-changed-by, #main-branch-investigated-by, #main-branch-status, #left-panel ul li {
