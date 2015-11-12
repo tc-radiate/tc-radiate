@@ -115,7 +115,7 @@
                         </ul>
                         <!-- /ko -->
                     </div>
-                    <div id="main-branch-triggered-by" data-bind="if: !$data.lastChanges && $data.triggeredBy">
+                    <div id="main-branch-triggered-by" data-bind="if: !$data.changes().length && $data.triggeredBy">
                         Triggered by <a class="highlight" data-bind="text: triggeredBy, attr: { href: webUrl }"></a>
                     </div>
                     <!-- /ko -->
