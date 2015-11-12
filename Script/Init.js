@@ -10,6 +10,10 @@
             error = "Sorry! I can't access the build service, are you sure '" + Settings.teamCityUrl + "' is the right url for your TeamCity server, or maybe you need to configure the proxy so AJAX can request the service?";
         viewModel.errorMessage(error);
     });
+
+    $(document).ajaxSuccess(function () {
+        viewModel.errorMessage(undefined);
+    });
 });
 
 $(document).ajaxSuccess(function () {
