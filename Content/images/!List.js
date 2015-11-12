@@ -30,6 +30,7 @@ Images.success.CodeDefinedList = [
     'happy8.png',
     'happy9.png',
     'happy10.png',
+    'http://cdn2.bigcommerce.com/server6100/a9579/products/2784/images/7386/IM_WHAT_WILLIS_WAS_TALKING_ABOUT__01274.1384272162.1280.1280.jpg',
 ];
 
 Images.unknown.CodeDefinedList = [
