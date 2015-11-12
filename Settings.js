@@ -43,7 +43,8 @@ var authType = Settings.useTeamCityGuest ? 'guestAuth' : 'httpAuth';
 // TEAM CITY URLS
 //----------------------
 
-Settings.restApiBaseUrl = Settings.proxy + Settings.teamCityUrl + '/' + authType + '/app/rest';
+Settings.teamCityBaseUrl = Settings.proxy + Settings.teamCityUrl;
+Settings.restApiBaseUrl = Settings.teamCityBaseUrl + '/' + authType + '/app/rest';
 //The url for the list of all builds on the left hand side of the screen
 Settings.buildsUrl = Settings.restApiBaseUrl + '/builds?locator=running:any';
 

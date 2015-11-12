@@ -222,24 +222,52 @@
                         dataType: "json",
                         url: url + '?' + Utils.getTsQSParam(),
                         xhrFields: { withCredentials: true },
-                        success: function (data, status, xhr) {
+                        success: function (build, status, xhr) {
                             try {
                                 isResultUpdate = true;
                                 if (lastMainBuild === xhr.responseText)
                                     return;
                                 lastMainBuild = xhr.responseText;
 
-                                data.isNew = !timeOfLastNotifyOfMainBuild() || (data.startDate > timeOfLastNotifyOfMainBuild());
+                                build.isNew = !timeOfLastNotifyOfMainBuild() || (build.startDate > timeOfLastNotifyOfMainBuild());
 
-                                timeOfLastNotifyOfMainBuild(data.startDate);
+                                timeOfLastNotifyOfMainBuild(build.startDate);
 
-                                var mainBuildModel = ko.mapping.fromJS(data, {
+                                var mainBuildModel = ko.mapping.fromJS(build, {
                                     create: function(options) {
                                         return new MainBuildViewModel(options.data);
                                     }
                                 });
 
-                                mainBuildModel.investigations = getInvestigationsForBuildType(data.buildTypeId);
+                                mainBuildModel.investigations = getInvestigationsForBuildType(build.buildTypeId);
+
+
+                                mainBuildModel.changes = (function () {
+                                    var changesFromApi = ko.observable([]);
+                                    var isResultUpdate = false;
+
+                                    return ko.computed({
+                                        read: function () {
+                                            if (!isResultUpdate) {
+                                                $.ajax({
+                                                    dataType: "json",
+                                                    url: Settings.teamCityBaseUrl + build.changes.href + Utils.getTsQSParam(),
+                                                    xhrFields: { withCredentials: true },
+                                                    success: function (changesResult) {
+                                                        try {
+                                                            isResultUpdate = true;
+                                                            changesFromApi(changesResult.change || []);
+                                                        } finally {
+                                                            isResultUpdate = false;
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                            return changesFromApi();
+                                        },
+                                        deferEvaluation: true
+                                    });
+                                })();
 
                                 mainBuildFromApi(mainBuildModel);
                             } finally {

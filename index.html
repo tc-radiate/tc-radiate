@@ -105,12 +105,12 @@
                         </ul>
                         <!-- /ko -->
                     </div>
-                    <div id="main-branch-changed-by" data-bind="with: $data.lastChanges">
-                        <!-- ko if: count -->
+                    <div id="main-branch-changed-by" data-bind="with: _($data.changes()).uniq(function (c) { return c.username; })">
+                        <!-- ko if: length -->
                         Last changes by
-                        <ul class="inlineSentenceList" data-bind="foreach: change">
+                        <ul class="inlineSentenceList" data-bind="foreach: $data">
                             <!-- ko if: username -->
-                            <li><a class="highlight" data-bind="text: username, attr: { href: webUrl }"></a></li>
+                            <li><a class="highlight" data-bind="text: username"></a></li>
                             <!-- /ko -->
                         </ul>
                         <!-- /ko -->
