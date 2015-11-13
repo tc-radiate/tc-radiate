@@ -127,8 +127,11 @@
 	    </div>
 
 	</div>
-    <div class="error-box" data-bind="showHide: hasError">
+    <div class="error-box" data-bind="showHide: errorMessage">
         <div data-bind="text: errorMessage"></div>
+    </div>
+    <div class="error-box" data-bind="showHide: !errorMessage() && !isFirstLoad() && builds().length === 0">
+        <div>There's no builds!? Better crack on with some work!</div>
     </div>
 
     <script src="Script/Libraries/underscore.js"></script>

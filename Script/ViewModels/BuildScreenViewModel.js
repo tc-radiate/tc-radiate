@@ -13,10 +13,11 @@
                             dataType: "json",
                             url: Settings.buildTypesUrl,
                             xhrFields: { withCredentials: true },
-                            success: function (data) {
+                            complete: function (xhr) {
+                                var data = xhr.status === 200 ? xhr.responseJSON.buildType : { isError: true };
                                 try {
                                     isResultUpdate = true;
-                                    buildTypesFromApi(data.buildType);
+                                    buildTypesFromApi(data);
                                 } finally {
                                     isResultUpdate = false;
                                 }
@@ -24,7 +25,7 @@
                         });
                     }
 
-                    return buildTypesFromApi().isLoadingPlaceholder ? buildTypesFromApi() : _(buildTypesFromApi()).map(function (buildTypeFromApi) {
+                    return buildTypesFromApi().isLoadingPlaceholder || buildTypesFromApi().isError ? buildTypesFromApi() : _(buildTypesFromApi()).map(function (buildTypeFromApi) {
                         buildTypeFromApi.branches = getBranchesForBuildTypeObservable(buildTypeFromApi);
                         return buildTypeFromApi;
                     });
@@ -51,6 +52,7 @@
                             url: Settings.buildTypesUrl + '/id:(' + buildType.id + ')' + '/branches?' + Utils.getTsQSParam(),
                             xhrFields: { withCredentials: true },
                             success: function (data) {
+                                // TODO #HandleErrors
                                 try {
                                     isResultUpdate = true;
                                     var branches = [{ isNoBranchPlaceHolder: true }];
@@ -85,6 +87,7 @@
                             xhrFields: { withCredentials: true },
                             success: function (data) {
                                 try {
+                                    // TODO #HandleErrors
                                     isResultUpdate = true;
                                     buildsFromApi(data.build || []);
                                 } finally {
@@ -104,9 +107,9 @@
 
         var projects;
 
-        var allBuildsOfAllProjectsOrLoadingPlaceholders = ko.computed({
+        var allBuildsOfAllProjectsOrPlaceholders = ko.computed({
             read: function () {
-                return projects().isLoadingPlaceholder ? [projects()] : (_(projects()).chain()
+                return projects().isLoadingPlaceholder || projects().isError ? [projects()] : (_(projects()).chain()
                     .map(function (project) {
                         return project.buildTypes.isLoadingPlaceholder ? project.buildTypes : _(project.buildTypes).map(function (buildType) {
                             return buildType.branches().isLoadingPlaceholder ? buildType.branches() : _(buildType.branches()).map(function (branch) {
@@ -120,7 +123,7 @@
         return {
             projects: projects = ko.computed({
                 read: function () {
-                    return buildTypes().isLoadingPlaceholder ? buildTypes() : _(buildTypes()).chain().groupBy(function (buildType) {
+                    return buildTypes().isLoadingPlaceholder || buildTypes().isError ? buildTypes() : _(buildTypes()).chain().groupBy(function (buildType) {
                         return buildType.projectId;
                     }).mapObject(function (buildTypes, projectId) {
                         return {
@@ -136,13 +139,19 @@
             }),
             allLoadedBuildsOfAllProjects: ko.computed({
                     read: function () {
-                        return allBuildsOfAllProjectsOrLoadingPlaceholders().filter(function (build) { return !build.isLoadingPlaceholder; });
+                        return allBuildsOfAllProjectsOrPlaceholders().filter(function (build) { return !build.isLoadingPlaceholder && !build.isError; });
                     },
                     deferEvaluation: true
                 }),
             isInitializing: ko.computed({
                 read: function () {
-                    return !!_(allBuildsOfAllProjectsOrLoadingPlaceholders()).findWhere({ isLoadingPlaceholder: true });
+                    return !!_(allBuildsOfAllProjectsOrPlaceholders()).findWhere({ isLoadingPlaceholder: true });
+                },
+                deferEvaluation: true
+            }),
+            isError: ko.computed({
+                read: function() {
+                    return projects().isError;
                 },
                 deferEvaluation: true
             })
@@ -224,6 +233,7 @@
                         xhrFields: { withCredentials: true },
                         success: function (build, status, xhr) {
                             try {
+                                // TODO #HandleErrors
                                 isResultUpdate = true;
                                 if (lastMainBuild === xhr.responseText)
                                     return;
@@ -255,6 +265,7 @@
                                                     xhrFields: { withCredentials: true },
                                                     success: function (changesResult) {
                                                         try {
+                                                            // TODO #HandleErrors
                                                             isResultUpdate = true;
                                                             changesFromApi(changesResult.change || []);
                                                         } finally {
@@ -293,6 +304,7 @@
                             xhrFields: { withCredentials: true },
                             success: function (data) {
                                 try {
+                                    // TODO #HandleErrors
                                     isResultUpdate = true;
                                     investigationsFromApi(data.investigation);
                                 } finally {
@@ -319,13 +331,6 @@
 
     self.errorMessage = ko.observable();
 
-    ko.computed(function () {
-        if (!self.isFirstLoad() && self.builds().length === 0)
-            self.errorMessage("There's no builds!? Better crack on with some work!");
-        else
-            self.errorMessage('');
-    });
-
     var imageUpdateTickSource = ko.observable();
 
     self.getImageForStatus = function(status) {
@@ -334,12 +339,6 @@
             return Images[status].getRandom();
         });
     }
-
-    self.hasError = ko.computed(function () {
-        if (!this.errorMessage())
-            return false;
-        return this.errorMessage().length > 0;
-    }, self);
 
     function updateData() {
         var newDataModel = getNewDataModel();
