@@ -41,7 +41,7 @@
                         }">
             <div class="page-loading" data-bind="showHide: isFirstLoad()"></div>
 	        <!-- ko with: mainBuild -->
-	        <div id="main-build" data-bind="css: lowerStatus">
+	        <div id="main-build" data-bind="css: lowerStatus() + ' ' + ($data.investigations().length ? 'investigated' : '')">
 	            <img data-bind="
                     attr: { src: $root.getImageForStatus(lowerStatus()) },
                     event: {
@@ -95,12 +95,14 @@
                         <!-- /ko -->
                         Build <span class="build-number" class="highlight" data-bind="text: number"></span>
                     </div>
-                    <div id="main-branch-investigated-by" data-bind="with: $data.investigations">
+                    <div id="main-branch-investigated-by" style="margin-bottom: .5em" data-bind="with: $data.investigations">
                         <!-- ko if: length -->
                         Investigated by
                         <ul class="inlineSentenceList" data-bind="foreach: $data">
                             <!-- ko if: assignee.name -->
-                            <li><span class="highlight" data-bind="text: assignee.name"></span></li>
+                            <li>
+                                <span class="highlight"><!-- ko text: assignee.name --><!-- /ko --><!-- ko if: assignment && assignment.text -->: <i style="font-weight: normal" data-bind="text: assignment.text"></i><!-- /ko --></span>
+                            </li>
                             <!-- /ko -->
                         </ul>
                         <!-- /ko -->

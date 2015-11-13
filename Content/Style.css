@@ -146,6 +146,9 @@
     text-align: center;
 }
 
+.investigated #main-branch-changed-by {
+    font-size: 1.5em;
+}
 
 #main-branch-name .build-project {
     font-size: 2.5em;
