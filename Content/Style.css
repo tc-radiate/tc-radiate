@@ -168,7 +168,7 @@
     white-space: nowrap;
 }
 
-#main-branch-name, #main-branch-changed-by, #main-branch-investigated-by, #main-branch-status, #left-panel ul li {
+#main-branch-name, #main-branch-changed-by, #main-branch-investigated-by, #main-branch-status, #main-branch-triggered-by, #left-panel ul li {
     -webkit-text-shadow: #000000 -3px 3px 4px;
     text-shadow: #000000 -3px 3px 4px;
 }
