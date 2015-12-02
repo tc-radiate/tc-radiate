@@ -16,7 +16,7 @@
 
     //How often to refresh the whole page in order to update the application (to get all the latest changes without having to come to the monitor and refresh).
     // Set to [0/undefined/null] to disable just this. Use enableAutoUpdate to disable this and any data updates.
-    appUpdateIntervalMs: 12 /*hr*/ * 60 * 60 * 1000,
+    appUpdateIntervalMs: 1 /*hr*/ * 60 * 60 * 1000,
 
     //How often to call the TeamCity webservices and update the data on the screen
     dataUpdateIntervalMs: 30/*sec*/ * 1000,
