@@ -55,7 +55,10 @@
                                 // TODO #HandleErrors
                                 try {
                                     isResultUpdate = true;
-                                    var branches = [{ isNoBranchPlaceHolder: true }];
+                                    var branches = [];
+                                    // Sadly, we don't get information from '/branches?' whether there are any 'no-branch' builds on this config (such builds can only be queried by branched:false, since they don't have a name). So, we add a fake entry here. Perhaps in future we could query the configuration.
+                                    if (data.branch.length === 1) // The entry needs to be conditional, because otherwise we will show very old builds for the jobs that only at some point started using the 'Branch specification'. This is because 'Branch specification' respects the expiry of 'Active branch' (see https://confluence.jetbrains.com/display/TCD9/Working+with+Feature+Branches#WorkingwithFeatureBranches-Activebranches ) and old 'no-branch' builds don't, so they would stay visible forever, despite being dead. If we queried the configuration we'd know for sure, but for now, we know that when the call to '/branches?' returns more than one branch, it's a sign of using the 'Branch specification' which seems to cover all our cases.
+                                        branches.push({ isNoBranchPlaceHolder: true });
                                     branches = branches.concat(data.branch);
                                     branchesFromApi(branches);
                                 } finally {
