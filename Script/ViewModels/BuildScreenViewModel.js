@@ -86,7 +86,7 @@
                     if (!isResultUpdate) {
                         $.ajax({
                             dataType: "json",
-                            url: Settings.buildsUrl + ',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:' + branch.name)) + '),count:1&fields=build(id,buildTypeId,number,status,state,running,percentageComplete,branchName,href,webUrl,startDate)' + Utils.getTsQSParam(),
+                            url: Settings.buildsUrl + ',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:(' + branch.name + ')')) + '),count:1&fields=build(id,buildTypeId,number,status,state,running,percentageComplete,branchName,href,webUrl,startDate)' + Utils.getTsQSParam(),
                             xhrFields: { withCredentials: true },
                             success: function (data) {
                                 try {
