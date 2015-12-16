@@ -57,7 +57,7 @@
 }
 
 .failure {
-    background-color: #ff3333!important;
+    background-color: #ff6666!important;
 }
 
 .running {
@@ -116,6 +116,7 @@
     font-size: 4em;
     text-align: center;
     text-transform: uppercase;
+    padding:10px;
 }
 
 #left-panel {
@@ -153,7 +154,7 @@
 }
 
 #main-branch-name .build-project {
-    font-size: 3em;
+    font-size: 4em;
 }
 
 #main-branch-name .build-type {
