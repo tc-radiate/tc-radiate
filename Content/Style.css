@@ -3,6 +3,7 @@
     background-color: #000;
     color: #DEDEDE;
     font-family: Calibri, Tahoma;
+    letter-spacing: 2px;
 }
 
 .page-content {
@@ -56,7 +57,7 @@
 }
 
 .failure {
-    background-color: Red!important;
+    background-color: #ff3333!important;
 }
 
 .running {
@@ -169,8 +170,8 @@
 }
 
 #main-branch-name, #main-branch-changed-by, #main-branch-investigated-by, #main-branch-status, #main-branch-triggered-by, #left-panel ul li {
-    -webkit-text-shadow: #000000 -3px 3px 4px;
-    text-shadow: #000000 -3px 3px 4px;
+    -webkit-text-shadow: #000000 0px 5px 10px;
+    text-shadow: #000000 0px 5px 10px;
 }
 
 ul.inlineSentenceList {
