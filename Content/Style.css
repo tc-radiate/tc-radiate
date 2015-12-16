@@ -1,7 +1,7 @@
 ﻿body {
     margin: 0;
     background-color: #000;
-    color: #DEDEDE;
+    color: #fff;
     font-family: Calibri, Tahoma;
     letter-spacing: 2px;
 }
@@ -32,8 +32,6 @@
         margin: 10px;
         border: 1px solid grey;
         border-radius: 5px;
-        -webkit-box-shadow: #000 0px 5px 10px;
-        box-shadow: #000 0px 5px 10px;
         color: #FFFFFF;
     }
 
@@ -57,7 +55,7 @@
 }
 
 .failure {
-    background-color: #ff6666!important;
+    background-color: #d9534f!important;
 }
 
 .running {
@@ -172,8 +170,8 @@
 }
 
 #main-branch-name, #main-branch-changed-by, #main-branch-investigated-by, #main-branch-status, #main-branch-triggered-by, #left-panel ul li {
-    -webkit-text-shadow: #000000 0px 5px 10px;
-    text-shadow: #000000 0px 5px 10px;
+    -webkit-text-shadow: #000000;
+    text-shadow: #000000;
 }
 
 ul.inlineSentenceList {
