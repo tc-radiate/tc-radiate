@@ -135,11 +135,12 @@
 
 #left-panel .build-project { 
     padding-right: .2em;
-    font-size:2em;
+    font-size:3em;
 }
 
 #left-panel .build-type {
     padding-right: .2em;
+    font-size:2em;
 }
 
 #main-branch-changed-by, #main-branch-triggered-by, #main-branch-investigated-by {
