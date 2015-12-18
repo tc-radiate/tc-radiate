@@ -170,9 +170,14 @@
     white-space: nowrap;
 }
 
-#main-branch-name, #main-branch-changed-by, #main-branch-investigated-by, #main-branch-status, #main-branch-triggered-by, #left-panel ul li {
+#left-panel ul li {
     -webkit-text-shadow: #000000;
     text-shadow: #000000;
+}
+
+/*Add shadow to make stuff that can lay over an image readable*/ #main-branch-name, #main-branch-changed-by, #main-branch-investigated-by, #main-branch-status, #main-branch-triggered-by {
+    -webkit-text-shadow: #000000 0px 5px 5px;
+    text-shadow: #000000 0px 5px 5px;
 }
 
 ul.inlineSentenceList {
