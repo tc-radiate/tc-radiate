@@ -30,14 +30,22 @@
     //Only show builds for branches that satisfy the predicate
     branchFilter: function(branch) {
         return (
-            !branch.name /* No branch name is there for builds with no VCS roots at all, or when 'Branch specification' is left empty (e.g. when not using feature branches at all)*/
-            || [
-                "<default>"/*This branch name is used for the default builds, when there are multiple VCS roots with different branches (e.g. source and config files are in different repos) */,
-                "master",
-                "refs/heads/master" /* Long Git 'refs/...' names are used when 'Branch specification' doesn't have a '*' and paretheses are also not being used to mark the 'Logical branch name' - see https://confluence.jetbrains.com/display/TCD9/Working+with+Feature+Branches#WorkingwithFeatureBranches-Logicalbranchname */,
-                "develop",
-                "refs/heads/develop"
-            ].indexOf(branch.name) > -1
+            (branch.buildType.projectName != "Tour Itinerary Portal" 
+                || [
+                    "aws-uat :: Create stack", 
+                    "aws-uat :: Deploy", 
+                    "aws-uat :: Delete stack"
+                ].indexOf(branch.buildType.name) == -1) // Ignore TIP UAT, as the peering VPS infrastructure has not been set up
+            && (
+                !branch.name /* No branch name is there for builds with no VCS roots at all, or when 'Branch specification' is left empty (e.g. when not using feature branches at all)*/
+                || [
+                    "<default>"/*This branch name is used for the default builds, when there are multiple VCS roots with different branches (e.g. source and config files are in different repos) */,
+                    "master",
+                    "refs/heads/master" /* Long Git 'refs/...' names are used when 'Branch specification' doesn't have a '*' and paretheses are also not being used to mark the 'Logical branch name' - see https://confluence.jetbrains.com/display/TCD9/Working+with+Feature+Branches#WorkingwithFeatureBranches-Logicalbranchname */,
+                    "develop",
+                    "refs/heads/develop"
+                ].indexOf(branch.name) > -1
+            )
         );
     }
 };
