@@ -40,6 +40,10 @@
                 || [
                     "Run BDD tests on develop branch"
                 ].indexOf(branch.buildType.name) == -1) // Ignore SSO E2E tests, as they are not reliable. Fix and unignore!
+            && (branch.buildType.projectName != "iTROPICS" 
+                || [
+                    "AWS Deploy QA"
+                ].indexOf(branch.buildType.name) == -1) // Ignore iTropics QA deployment, as the environment is not ready
             && (
                 !branch.name /* No branch name is there for builds with no VCS roots at all, or when 'Branch specification' is left empty (e.g. when not using feature branches at all)*/
                 || [
