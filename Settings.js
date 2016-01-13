@@ -36,6 +36,10 @@
                     "aws-uat :: Deploy", 
                     "aws-uat :: Delete stack"
                 ].indexOf(branch.buildType.name) == -1) // Ignore TIP UAT, as the peering VPS infrastructure has not been set up
+            && (branch.buildType.projectName != "Single Sign On" 
+                || [
+                    "Run BDD tests on develop branch"
+                ].indexOf(branch.buildType.name) == -1) // Ignore SSO E2E tests, as they are not reliable. Fix and unignore!
             && (
                 !branch.name /* No branch name is there for builds with no VCS roots at all, or when 'Branch specification' is left empty (e.g. when not using feature branches at all)*/
                 || [
