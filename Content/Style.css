@@ -58,6 +58,13 @@
     background-color: #d9534f!important;
 }
 
+.failure.investigated {
+    background-color: #d9674f!important;
+}
+.failure.investigated > :first-child:before {
+    content: '🔍 ';
+}
+
 .running {
     background-color: gray!important;
 }

@@ -105,9 +105,16 @@
                     }
 
                     return buildsFromApi().isLoadingPlaceholder ? buildsFromApi() : ko.utils.arrayMap(buildsFromApi(), function (build) {
+                        // this is just a trick to prevent ko.mapping from evaluating the investigations observable. TODO get rid of ko.mapping (used underneath this._super() in the SingleBuildViewModel), which evaluates our computeds immediately, creating a cyclic dependency on the build object, and causing an infinite loop when request for investigations comes back, by triggering uptade of builds.
+                        var investigationsComputed;
+                        build.investigations = function() {
+                                return (investigationsComputed || (investigationsComputed = build.status === 'SUCCESS' ? ko.observable([]) : getInvestigationsForBuildType(build.buildTypeId)))();
+                            };
+
                         return new SingleBuildViewModel(build, buildTypes());
                     });
-                }
+                },
+                deferEvaluation: true
             });
             return builds;
         }
@@ -120,7 +127,7 @@
                     .map(function (project) {
                         return project.buildTypes.isLoadingPlaceholder ? project.buildTypes : _(project.buildTypes).map(function (buildType) {
                             return buildType.branches().isLoadingPlaceholder ? buildType.branches() : _(buildType.branches()).map(function (branch) {
-                                return branch.builds();
+                                return branch.builds().isLoadingPlaceholder ? branch.builds() : _(branch.builds()).map(function (build) { return (build.investigations && build.investigations().isLoadingPlaceholder ? { isLoadingPlaceholder: true } : build); });
                             });
                         });
                     }).flatten().value());
@@ -199,7 +206,7 @@
             return _(currentViewDataModel().allLoadedBuildsOfAllProjects()).chain().filter(function (build) {
                 return _(buildFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(build); }) === false;
             })
-            .sortBy(function (build) { return (build.status() !== 'SUCCESS' ? (build.isRunning() ? 4 : 3) : (build.isRunning() ? 2 : 1)) + '_' + build.startDate(); })
+            .sortBy(function (build) { return (build.status() !== 'SUCCESS' ? (build.isRunning() ? 5 : (build.investigations().length === 0 ? 4 : 3)) : (build.isRunning() ? 2 : 1)) + '_' + build.startDate(); })
             .value()
             .reverse();
         },
@@ -299,36 +306,36 @@
             }
         });
 
-        function getInvestigationsForBuildType(buildTypeId) {
-            var investigationsFromApi = ko.observable([]);
-            var isResultUpdate = false;
-            return ko.computed({
-                read: function () {
-                    if (!isResultUpdate) {
-                        $.ajax({
-                            dataType: "json",
-                            url: Settings.restApiBaseUrl + '/investigations?locator=buildType:(id:(' + buildTypeId + '))' + Utils.getTsQSParam(),
-                            xhrFields: { withCredentials: true },
-                            success: function (data) {
-                                try {
-                                    // TODO #HandleErrors
-                                    isResultUpdate = true;
-                                    investigationsFromApi(data.investigation);
-                                } finally {
-                                    isResultUpdate = false;
-                                }
-                            }
-                        });
-                    }
-
-                    return investigationsFromApi();
-                },
-                deferEvaluation: true
-            });
-
-        }
         return mainBuildFromApi;
     })();
+
+    function getInvestigationsForBuildType(buildTypeId) {
+        var investigationsFromApi = ko.observable({ isLoadingPlaceholder: true });
+        var isResultUpdate = false;
+        return ko.computed({
+            read: function () {
+                if (!isResultUpdate) {
+                    $.ajax({
+                        dataType: "json",
+                        url: Settings.restApiBaseUrl + '/investigations?locator=buildType:(id:(' + buildTypeId + '))' + Utils.getTsQSParam(),
+                        xhrFields: { withCredentials: true },
+                        success: function (data) {
+                            try {
+                                // TODO #HandleErrors
+                                isResultUpdate = true;
+                                investigationsFromApi(data.investigation || []);
+                            } finally {
+                                isResultUpdate = false;
+                            }
+                        }
+                    });
+                }
+
+                return investigationsFromApi();
+            },
+            deferEvaluation: true
+        });
+    }
 
 
     self.audio = {

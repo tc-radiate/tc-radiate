@@ -10,7 +10,7 @@
 	<div class="page-content" data-bind="showHide: !isFirstLoad() || builds().length">
 	    <div id="left-panel">
 	        <ul data-bind="foreach: { data: builds }">
-	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning() },
+	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning(), investigated: investigations() && investigations().length },
                         event: {
                             contextmenu: function () {
                                 if (confirm('Are you sure you want to stop monitoring this branch?\n(Right click on the big picture to show them all again)'))
