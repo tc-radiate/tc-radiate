@@ -68,11 +68,15 @@
                         });
                     }
 
-                    return branchesFromApi().isLoadingPlaceholder ? branchesFromApi() : _(branchesFromApi()).map(function (branchFromApi) {
-                        branchFromApi.buildType = buildType;
-                        branchFromApi.builds = getBuildsForBranchObservable(branchFromApi);
-                        return branchFromApi;
-                    }).filter(Settings.branchFilter || function() { return true; });
+                    return branchesFromApi().isLoadingPlaceholder ? branchesFromApi() : _(branchesFromApi()).map(function(branchFromApi) {
+                            branchFromApi.buildType = buildType;
+                            return branchFromApi;
+                        })
+                        .filter(Settings.branchFilter || function () { return true; })
+                        .map(function (branchFromApi) {
+                            branchFromApi.builds = getBuildsForBranchObservable(branchFromApi);
+                            return branchFromApi;
+                        });
                 }
             });
         }
