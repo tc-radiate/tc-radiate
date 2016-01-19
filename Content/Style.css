@@ -183,8 +183,13 @@
 }
 
 /*Add shadow to make stuff that can lay over an image readable*/ #main-branch-name, #main-branch-changed-by, #main-branch-investigated-by, #main-branch-status, #main-branch-triggered-by {
-    -webkit-text-shadow: #000000 0px 5px 5px;
-    text-shadow: #000000 0px 5px 5px;
+    text-shadow:
+        0 0 .1em rgba(0,0,0,1),
+        0 0 .1em rgba(0,0,0,1),
+        0 0 .1em rgba(0,0,0,1),
+        0 0 .1em rgba(0,0,0,1),
+        0 0 .1em rgba(0,0,0,1),
+        0 0 .1em rgba(0,0,0,1); /*Repeating to enhance the opacity beyond the 1 alpha - http://graphicdesign.stackexchange.com/a/5836 */
 }
 
 ul.inlineSentenceList {
