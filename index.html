@@ -142,10 +142,17 @@
                 <li>Is <a href="" data-bind="attr: { href: Settings.teamCityUrl }" target="_blank"><!-- ko text: Settings.teamCityUrl --><!-- /ko --></a> the address for your TeamCity server?<br/>(tinker with the query string in URL to change the address temporarily)</li>
                 <li>Have you specified valid TeamCity credentials?<br/>(your TeamCity username and password will do)</li>
                 <!-- ko if: location.origin.indexOf('http') === 0 -->
-                    <li>If you can trust that the organization owning the website <i><!-- ko text: location.origin --><!-- /ko --></i> is not going to do anything evil to your TeamCity, go to <a href="" data-bind="attr: { href: Settings.teamCityUrl + '/admin/admin.html?item=diagnostics&tab=properties' }" target="_blank">Administration > Diagnostics > Internal Properies</a> and add an 'Internal property' of<br/><i>rest.cors.origins=<!-- ko text: location.origin --><!-- /ko --></i><br/>(if that page doesn't allow you to edit internal properties, see <a href="https://confluence.jetbrains.com/display/TCD9/Configuring+TeamCity+Server+Startup+Properties#ConfiguringTeamCityServerStartupProperties-TeamCityinternalpropertiesinternal.properties" target="_blank">TC documentation</a>).</li>
+                    <li>Have you configured your TeamCity to allow <i><!-- ko text: location.origin --><!-- /ko --></i> website to use the TeamCity services?<br/>
+                    If you can trust that the organization owning the website <i><!-- ko text: location.origin --><!-- /ko --></i> is not going to do anything evil to your TeamCity, go to <a href="" data-bind="attr: { href: Settings.teamCityUrl + '/admin/admin.html?item=diagnostics&tab=properties' }" target="_blank">Administration > Diagnostics > Internal Properies</a> and add an 'Internal property' of:
+                    <br/><i>rest.cors.origins=<!-- ko text: location.origin --><!-- /ko --></i><br/>
+                        (if that page doesn't allow you to edit internal properties, see <a href="https://confluence.jetbrains.com/display/TCD9/Configuring+TeamCity+Server+Startup+Properties#ConfiguringTeamCityServerStartupProperties-TeamCityinternalpropertiesinternal.properties" target="_blank">TC documentation</a>).
+                    </li>
                 <!-- /ko -->
-                <!-- ko if: $data.code === 'CONNECTION_ERROR' -->
-                <li>Just testing? Or no admin rights to TeamCity?<br/>Use a browser plugin to disable Cross-Domain security. (But if you do, don't visit any other pages with that browser process!)
+                <!-- ko ifnot: location.origin.indexOf('http') === 0 -->
+                    <li>Trying to test a local html page?<br/>
+                    See <a href="https://github.com/travcorp/tc-radiate/#testing-local-changes" target="_blank">this section</a> of Project's Readme.</li>
+                <!-- /ko -->
+                <li>Just trying out? Or no admin rights to TeamCity?<br/>Use a browser plugin to disable Cross-Domain security. (But if you do, don't visit any other pages with that browser process!)
                 <br/>(...or, if you're really desperate, <a href="https://github.com/travcorp/tc-radiate/#proxy" target="_blank">host your own 'security-stripping' proxy</a>)
                 </li>
             </ol>
