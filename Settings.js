@@ -1,4 +1,4 @@
-﻿var Settings = {
+﻿var DefaultSettings = {
     //The url that points to team city
     teamCityUrl: 'https://ci.travcorpservices.com',
 
@@ -57,6 +57,14 @@
         );
     }
 };
+
+var Settings = DefaultSettings;
+
+var queryString = Utils.getObjectFromQueryString();
+if (queryString.teamCityUrl)
+    Settings.teamCityUrl = queryString.teamCityUrl;
+else
+    history.replaceState(null, '', '?' + 'teamCityUrl=' + Settings.teamCityUrl + (location.search ? '&' + location.search.substr(1):'')); // Put the TeamCity url to the querystring - a cheap way of advertising to savvy users that they can connect to a different instance, and that they can have each tab connected to a different one
 
 //Allow the settings to be overridden by querystring parameters
 //(url parameters are currently only treated as strings)

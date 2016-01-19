@@ -7,8 +7,8 @@
     //hook up error handling here to avoid the DOM dependency on the view model
     $(document).ajaxError(function (event, request, settings, error) {
         console.error({ message: 'Received error for ajax request ' + settings.url, arguments: arguments });
-        if (error=="")
-            error = "Sorry! I can't access the build service, are you sure '" + Settings.teamCityUrl + "' is the right url for your TeamCity server, or maybe you need to configure the proxy so AJAX can request the service?";
+        if (error === "" || request.status === 401)
+            error = { code: 'CONNECTION_ERROR' };
         viewModel.errorMessage(error);
     });
 

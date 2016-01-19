@@ -2,6 +2,19 @@
 // HELPER METHODS
 //----------------------
 var Utils = {
+    getObjectFromQueryString: function (queryString) {
+        // Source http://stackoverflow.com/a/2880929/4356868
+        queryString = queryString || window.location.search.substring(1);
+        var match,
+            pl     = /\+/g,  // Regex for replacing addition symbol with a space
+            search = /([^&=]+)=?([^&]*)/g,
+            decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); };
+
+        var result = {};
+        while (match = search.exec(queryString))
+            result[decode(match[1])] = decode(match[2]);
+        return result;
+    },
 
     isUrlAbsolute: function (url) {
         // Source: http://stackoverflow.com/questions/10687099/how-to-test-if-a-url-string-is-absolute-or-relative
