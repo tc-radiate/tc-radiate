@@ -4,11 +4,11 @@ Based on [RobBollons/tc-radiate](https://github.com/RobBollons/tc-radiate) with 
 * Self hostable on Github under _youraccount.github.io/tc-radiate_ (deploy automatically by pushing to gh-pages branch)
 * Supports 'no guest account' setups of TeamCity (uses standard browser's basic authentication, so no credentials saved when not wanted)
 * Support for multiple projects (displays full name of each build)
-* Prioritize by _Uninvestigated Failure_ > _Investigated Failure_ > _Running_ > _Success_ (big picture always shows highest priority)
-* Show author names of failed changes (triggerer displayed when no changes)
-* Show investigator and investigator's comment
-* Sound on failure (can be muted persistently)
-* Very easy to add more sounds and images. Supports remote URLs with fallback to local ones.
+* Prioritizes by: _Uninvestigated Failure_ > _Investigated Failure_ > _Running_ > _Success_ (by recency within each group, big picture always shows highest priority)
+* Shows author names of failed changes (when no changes shows who triggerred the build)
+* Shows investigator and investigator's comment
+* Can play sound on failure (can be muted persistently)
+* Very easy to add more sounds and images (supports remote URLs with fallback to local ones)
 
 <img src="screenshot.jpg" width="600" />
 
