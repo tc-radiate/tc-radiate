@@ -143,24 +143,28 @@
             </style>
             <ol class="resolutions">
                 <li><span class="question">Is <a href="" data-bind="attr: { href: Settings.teamCityUrl }" target="_blank"><!-- ko text: Settings.teamCityUrl --><!-- /ko --></a> the address for your TeamCity server?</span>
-                    <br/>(tinker with the query string in URL to change the address temporarily)
+                    <br/>(tinker with your address bar to change the address temporarily)
                 </li>
                 <li>
                     <span class="question">Have you specified valid TeamCity credentials?</span><br/>
                     (your TeamCity username and password will do)
                 </li>
-                <!-- ko if: location.origin.indexOf('http') === 0 -->
+                <!-- ko if: location.host -->
                     <li>
-                        <span class="question">Have you configured your TeamCity to allow <i><!-- ko text: location.origin --><!-- /ko --></i> website to use the TeamCity services?</span><br/>
-                        If you can trust that the organization owning the website <i><!-- ko text: location.origin --><!-- /ko --></i> is not going to do anything evil to your TeamCity, go to <a href="" data-bind="attr: { href: Settings.teamCityUrl + '/admin/admin.html?item=diagnostics&tab=properties' }" target="_blank">Administration > Diagnostics > Internal Properies</a> and add an 'Internal property' of:
-                        <br/><i>rest.cors.origins=<!-- ko text: location.origin --><!-- /ko --></i><br/>
+                        <span class="question">Have you created your fork and configured your TeamCity to allow your monitor to use the TeamCity services?</span><br/>
+                        Fork your own tc-radiate <a href="https://github.com/travcorp/tc-radiate">from here</a> and open your fork's Github Pages, so that there is your username in this hostname here: '<!-- ko text: location.host --><!-- /ko -->'. Then go to <a href="" data-bind="attr: { href: Settings.teamCityUrl + '/admin/admin.html?item=diagnostics&tab=properties' }" target="_blank">Administration > Diagnostics > Internal Properies</a> and add an 'Internal property' of:
+                        <br/><i>rest.cors.origins=http://<!-- ko text: location.host --><!-- /ko -->,https://<!-- ko text: location.host --><!-- /ko --></i><br/>
                         (if that page doesn't allow you to edit internal properties, see <a href="https://confluence.jetbrains.com/display/TCD9/Configuring+TeamCity+Server+Startup+Properties#ConfiguringTeamCityServerStartupProperties-TeamCityinternalpropertiesinternal.properties" target="_blank">TC documentation</a>).
+
                     </li>
                 <!-- /ko -->
-                <!-- ko ifnot: location.origin.indexOf('http') === 0 -->
+            </ol>
+            <h2 style="margin-top: 4em">Alternatively:</h2>
+            <ul class="resolutions">
+                <!-- ko ifnot: location.host -->
                     <li>
-                        <span class="question">Trying to test it on your local html file?</span><br/>
-                        See <a href="https://github.com/travcorp/tc-radiate/#testing-local-changes" target="_blank">this section</a> of Project's Readme.
+                        <span class="question">Just trying to test it on your local filesystem?</span><br/>
+                        See <a href="https://github.com/travcorp/tc-radiate/#testing-local-changes" target="_blank">this section</a> of the Project's Readme.
                     </li>
                 <!-- /ko -->
                 <li>
@@ -168,7 +172,7 @@
                     <br/>Use a browser plugin to disable Cross-Domain security. (But if you do, don't visit any other pages with that browser process!)<br/>
                     (...or, if you're really desperate, <a href="https://github.com/travcorp/tc-radiate/#proxy" target="_blank">host your own 'security-stripping' proxy</a>)
                 </li>
-            </ol>
+            </ul>
              
         </div>
         <!-- /ko -->
