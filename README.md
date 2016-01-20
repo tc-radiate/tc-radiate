@@ -1,7 +1,7 @@
 TravCorp's Radiator for TeamCity
 ==========
 Based on [RobBollons/tc-radiate](https://github.com/RobBollons/tc-radiate) with improved features:
-* Self hosted on 'github.io' - deploy automatically by pushing to gh-pages branch
+* Self hostable on Github under _youraccount.github.io/tc-radiate_ (deploy automatically by pushing to gh-pages branch)
 * Supports 'no guest account' setups of TeamCity (uses standard browser's basic authentication, so no credentials saved when not wanted)
 * Support for multiple projects (displays full name of each build)
 * Prioritize by _Uninvestigated Failure_ > _Investigated Failure_ > _Running_ > _Success_ (big picture always shows highest priority)
