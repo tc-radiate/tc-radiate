@@ -1,5 +1,15 @@
-TravCorp's Radiator for TeamCity (based on tc-radiate)
+TravCorp's Radiator for TeamCity
 ==========
+Based on [RobBollons/tc-radiate](https://github.com/RobBollons/tc-radiate) with improved features:
+* Support for multiple projects (displays full name of each build)
+* Prioritize by _Uninvestigated Failure_ > _Investigated Failure_ > _Running_ > _Success_ (big picture always shows highest priority)
+* Show author names of failed changes (triggerer displayed when no changes)
+* Show investigator and investigator's comment
+* Sound on failure (can be muted persistently)
+* Very easy to add more sounds and images. Supports remote URLs with fallback to local ones.
+
+<img src="screenshot.jpg" width="600" />
+
 
 Working monitors
 -------------
@@ -26,8 +36,6 @@ tc-radiate
 A simple JavaScript build radiator for TeamCity
 
 Please feel free to fork and hack away at the code.
-
-![Screenshot](screenshot.jpg "Screenshot")
 
 Configuration
 -------------
