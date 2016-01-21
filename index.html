@@ -127,8 +127,8 @@
 	    </div>
 
 	</div>
-    <div class="error-box" data-bind="showHide: errorMessage, with: errorMessage">
-        <!-- ko if: $data.code === 'CONNECTION_ERROR' -->
+    <div class="error-box" data-bind="showHide: errorsInfo, with: errorsInfo">
+        <!-- ko if: $data.code === 'CONNECTION_ERROR' && !$parent.hasConnectionWorked() -->
         <div>
             <h1>Sorry! I can't access the TeamCity web service.</h1>
             <style>
@@ -142,7 +142,7 @@
                 }
             </style>
             <ol class="resolutions">
-                <li><span class="question">Is <a href="" data-bind="attr: { href: Settings.teamCityUrl }" target="_blank"><!-- ko text: Settings.teamCityUrl --><!-- /ko --></a> the address for your TeamCity server?</span>
+                <li><span class="question">Are you sure that <a href="" data-bind="attr: { href: Settings.teamCityUrl }" target="_blank"><!-- ko text: Settings.teamCityUrl --><!-- /ko --></a> is the address for your TeamCity server?</span>
                     <br/>(tinker with your address bar to change the address temporarily)
                 </li>
                 <li>
@@ -163,7 +163,7 @@
             <ul class="resolutions">
                 <!-- ko ifnot: location.host -->
                     <li>
-                        <span class="question">Just trying to test it on your local filesystem?</span><br/>
+                        <span class="question">Running the monitors from your local filesystem?</span><br/>
                         See <a href="https://github.com/travcorp/tc-radiate/#testing-local-changes" target="_blank">this section</a> of the Project's Readme.
                     </li>
                 <!-- /ko -->
@@ -176,11 +176,20 @@
              
         </div>
         <!-- /ko -->
-        <!-- ko ifnot: $data.code === 'CONNECTION_ERROR' -->
-            <div data-bind="text: $data"></div>
-        <!-- /ko -->
+        <div>
+            <!-- ko if: $data.code === 'CONNECTION_ERROR' && $parent.hasConnectionWorked() -->
+                <h1 style="font-size: 5em">🔌<br />Connection to TeamCity seems to have gone down :(</h1>
+            <!-- /ko -->
+            <!-- ko ifnot: $data.code === 'CONNECTION_ERROR' -->
+                <h1>🐛<br />Can't get data from TeamCity. Might be a bug :(</h1>
+                <h2>Error: <!-- ko text: $data.allErrors[0].errorText --><!-- /ko --></h2>
+            <!-- /ko -->
+            <!-- ko if: $parent.hasConnectionWorked() -->
+                <h2>Last checked on <!-- ko text: new Date() --><!-- /ko --></h2>
+            <!-- /ko -->
+        </div>
     </div>
-    <div class="error-box" data-bind="showHide: !errorMessage() && !isFirstLoad() && builds().length === 0">
+    <div class="error-box" data-bind="showHide: !errorsInfo() && !isFirstLoad() && builds().length === 0">
         <div>There's no builds!? Better crack on with some work!</div>
     </div>
 

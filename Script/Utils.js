@@ -16,6 +16,11 @@ var Utils = {
         return result;
     },
 
+    getErrorFromAjaxAlways: function (dataOrXhr, textStatus, xhrOrErrorText) {
+        // Use in $.ajax().always()
+        return textStatus !== 'success' ? { isError: true, errorText: xhrOrErrorText, xhr: dataOrXhr, textStatus: textStatus } : null;
+    },
+
     isUrlAbsolute: function (url) {
         // Source: http://stackoverflow.com/questions/10687099/how-to-test-if-a-url-string-is-absolute-or-relative
         return /^https?:\/\//i.test(url);

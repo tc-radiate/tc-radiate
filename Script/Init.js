@@ -7,13 +7,10 @@
     //hook up error handling here to avoid the DOM dependency on the view model
     $(document).ajaxError(function (event, request, settings, error) {
         console.error({ message: 'Received error for ajax request ' + settings.url, arguments: arguments });
-        if (error === "" || request.status === 401)
-            error = { code: 'CONNECTION_ERROR' };
-        viewModel.errorMessage(error);
     });
 
     $(document).ajaxSuccess(function () {
-        viewModel.errorMessage(undefined);
+        viewModel.hasConnectionWorked(true);
     });
 });
 

@@ -12,17 +12,16 @@
                         $.ajax({
                             dataType: "json",
                             url: Settings.buildTypesUrl,
-                            xhrFields: { withCredentials: true },
-                            complete: function (xhr) {
-                                var data = xhr.status === 200 ? xhr.responseJSON.buildType : { isError: true };
-                                try {
-                                    isResultUpdate = true;
-                                    buildTypesFromApi(data);
-                                } finally {
-                                    isResultUpdate = false;
-                                }
+                            xhrFields: { withCredentials: true }
+                        }).always(function (data, textStatus, xhr) {
+                            try {
+                                isResultUpdate = true;
+                                buildTypesFromApi(Utils.getErrorFromAjaxAlways.apply(this, arguments) || xhr.responseJSON.buildType);
+                            } finally {
+                                isResultUpdate = false;
                             }
-                        });
+                        })
+                        ;
                     }
 
                     return buildTypesFromApi().isLoadingPlaceholder || buildTypesFromApi().isError ? buildTypesFromApi() : _(buildTypesFromApi()).map(function (buildTypeFromApi) {
@@ -50,25 +49,23 @@
                         $.ajax({
                             dataType: "json",
                             url: Settings.buildTypesUrl + '/id:(' + buildType.id + ')' + '/branches?' + Utils.getTsQSParam(),
-                            xhrFields: { withCredentials: true },
-                            success: function (data) {
-                                // TODO #HandleErrors
-                                try {
-                                    isResultUpdate = true;
-                                    var branches = [];
-                                    // Sadly, we don't get information from '/branches?' whether there are any 'no-branch' builds on this config (such builds can only be queried by branched:false, since they don't have a name). So, we add a fake entry here. Perhaps in future we could query the configuration.
-                                    if (data.branch.length === 1) // The entry needs to be conditional, because otherwise we will show very old builds for the jobs that only at some point started using the 'Branch specification'. This is because 'Branch specification' respects the expiry of 'Active branch' (see https://confluence.jetbrains.com/display/TCD9/Working+with+Feature+Branches#WorkingwithFeatureBranches-Activebranches ) and old 'no-branch' builds don't, so they would stay visible forever, despite being dead. If we queried the configuration we'd know for sure, but for now, we know that when the call to '/branches?' returns more than one branch, it's a sign of using the 'Branch specification' which seems to cover all our cases.
-                                        branches.push({ isNoBranchPlaceHolder: true });
-                                    branches = branches.concat(data.branch);
-                                    branchesFromApi(branches);
-                                } finally {
-                                    isResultUpdate = false;
-                                }
+                            xhrFields: { withCredentials: true }
+                        }).always(function (data) {
+                            try {
+                                isResultUpdate = true;
+                                var branches = [];
+                                // Sadly, we don't get information from '/branches?' whether there are any 'no-branch' builds on this config (such builds can only be queried by branched:false, since they don't have a name). So, we add a fake entry here. Perhaps in future we could query the configuration.
+                                if (data.branch && data.branch.length === 1) // The entry needs to be conditional, because otherwise we will show very old builds for the jobs that only at some point started using the 'Branch specification'. This is because 'Branch specification' respects the expiry of 'Active branch' (see https://confluence.jetbrains.com/display/TCD9/Working+with+Feature+Branches#WorkingwithFeatureBranches-Activebranches ) and old 'no-branch' builds don't, so they would stay visible forever, despite being dead. If we queried the configuration we'd know for sure, but for now, we know that when the call to '/branches?' returns more than one branch, it's a sign of using the 'Branch specification' which seems to cover all our cases.
+                                    branches.push({ isNoBranchPlaceHolder: true });
+                                branches = branches.concat(data.branch);
+                                branchesFromApi(Utils.getErrorFromAjaxAlways.apply(this, arguments) || branches);
+                            } finally {
+                                isResultUpdate = false;
                             }
                         });
                     }
 
-                    return branchesFromApi().isLoadingPlaceholder ? branchesFromApi() : _(branchesFromApi()).map(function(branchFromApi) {
+                    return branchesFromApi().isLoadingPlaceholder || branchesFromApi().isError ? branchesFromApi() : _(branchesFromApi()).map(function (branchFromApi) {
                             branchFromApi.buildType = buildType;
                             return branchFromApi;
                         })
@@ -91,20 +88,18 @@
                         $.ajax({
                             dataType: "json",
                             url: Settings.buildsUrl + ',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:(' + branch.name + ')')) + '),count:1&fields=build(id,buildTypeId,number,status,state,running,percentageComplete,branchName,href,webUrl,startDate)' + Utils.getTsQSParam(),
-                            xhrFields: { withCredentials: true },
-                            success: function (data) {
-                                try {
-                                    // TODO #HandleErrors
-                                    isResultUpdate = true;
-                                    buildsFromApi(data.build || []);
-                                } finally {
-                                    isResultUpdate = false;
-                                }
+                            xhrFields: { withCredentials: true }
+                        }).always(function (data) {
+                            try {
+                                isResultUpdate = true;
+                                buildsFromApi(Utils.getErrorFromAjaxAlways.apply(this, arguments) || data.build || []);
+                            } finally {
+                                isResultUpdate = false;
                             }
                         });
                     }
 
-                    return buildsFromApi().isLoadingPlaceholder ? buildsFromApi() : ko.utils.arrayMap(buildsFromApi(), function (build) {
+                    return buildsFromApi().isLoadingPlaceholder || buildsFromApi().isError ? buildsFromApi() : ko.utils.arrayMap(buildsFromApi(), function (build) {
                         // this is just a trick to prevent ko.mapping from evaluating the investigations observable. TODO get rid of ko.mapping (used underneath this._super() in the SingleBuildViewModel), which evaluates our computeds immediately, creating a cyclic dependency on the build object, and causing an infinite loop when request for investigations comes back, by triggering uptade of builds.
                         var investigationsComputed;
                         build.investigations = function() {
@@ -126,8 +121,8 @@
                 return projects().isLoadingPlaceholder || projects().isError ? [projects()] : (_(projects()).chain()
                     .map(function (project) {
                         return project.buildTypes.isLoadingPlaceholder ? project.buildTypes : _(project.buildTypes).map(function (buildType) {
-                            return buildType.branches().isLoadingPlaceholder ? buildType.branches() : _(buildType.branches()).map(function (branch) {
-                                return branch.builds().isLoadingPlaceholder ? branch.builds() : _(branch.builds()).map(function (build) { return (build.investigations && build.investigations().isLoadingPlaceholder ? { isLoadingPlaceholder: true } : build); });
+                            return buildType.branches().isLoadingPlaceholder || buildType.branches().isError ? buildType.branches() : _(buildType.branches()).map(function (branch) {
+                                return branch.builds().isLoadingPlaceholder || branch.builds().isError ? branch.builds() : _(branch.builds()).map(function (build) { return (build.investigations && build.investigations().isLoadingPlaceholder || build.investigations().isError ? build.investigations() : build); });
                             });
                         });
                     }).flatten().value());
@@ -163,9 +158,15 @@
                 },
                 deferEvaluation: true
             }),
-            isError: ko.computed({
-                read: function() {
-                    return projects().isError;
+            errorsInfo: ko.computed({
+                read: function () {
+                    var allErrors = _(allBuildsOfAllProjectsOrPlaceholders()).where({ isError: true });
+                    if (allErrors.length === 0)
+                        return null;
+                    if (_(allErrors).any(function (error) { return error.errorText === "" || error.textStatus === 'timeout' || (error.xhr && (error.xhr.status === 401 || error.xhr.status === 403 || error.xhr.status >= 500)); }))
+                        return { code: 'CONNECTION_ERROR' };
+                    else
+                        return { allErrors: allErrors };
                 },
                 deferEvaluation: true
             })
@@ -177,6 +178,7 @@
     self.isFirstLoad = ko.computed(function() {
         return currentViewDataModel().isInitializing();
     });
+    self.hasConnectionWorked = ko.observable(false);
 
     var buildFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ getAppStorageKey('buildFilterExcludeProperties'));
     var buildFilterExcludeFunctions = ko.computed(function () {
@@ -244,60 +246,70 @@
                     $.ajax({
                         dataType: "json",
                         url: url + '?' + Utils.getTsQSParam(),
-                        xhrFields: { withCredentials: true },
-                        success: function (build, status, xhr) {
-                            try {
-                                // TODO #HandleErrors
-                                isResultUpdate = true;
-                                if (lastMainBuild === xhr.responseText)
-                                    return;
-                                lastMainBuild = xhr.responseText;
+                        xhrFields: { withCredentials: true }
+                    }).always(function (build, status, xhr) {
+                        try {
+                            isResultUpdate = true;
 
-                                build.isNew = !timeOfLastNotifyOfMainBuild() || (build.startDate > timeOfLastNotifyOfMainBuild());
-
-                                timeOfLastNotifyOfMainBuild(build.startDate);
-
-                                var mainBuildModel = ko.mapping.fromJS(build, {
-                                    create: function(options) {
-                                        return new MainBuildViewModel(options.data);
-                                    }
-                                });
-
-                                mainBuildModel.investigations = getInvestigationsForBuildType(build.buildTypeId);
-
-
-                                mainBuildModel.changes = (function () {
-                                    var changesFromApi = ko.observable([]);
-                                    var isResultUpdate = false;
-
-                                    return ko.computed({
-                                        read: function () {
-                                            if (!isResultUpdate) {
-                                                $.ajax({
-                                                    dataType: "json",
-                                                    url: Settings.teamCityBaseUrl + build.changes.href + Utils.getTsQSParam(),
-                                                    xhrFields: { withCredentials: true },
-                                                    success: function (changesResult) {
-                                                        try {
-                                                            // TODO #HandleErrors
-                                                            isResultUpdate = true;
-                                                            changesFromApi(changesResult.change || []);
-                                                        } finally {
-                                                            isResultUpdate = false;
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                            return changesFromApi();
-                                        },
-                                        deferEvaluation: true
-                                    });
-                                })();
-
-                                mainBuildFromApi(mainBuildModel);
-                            } finally {
-                                isResultUpdate = false;
+                            var error = Utils.getErrorFromAjaxAlways.apply(this, arguments);
+                            if (error) {
+                                mainBuildFromApi(undefined); // TODO show the error
+                                return;
                             }
+
+                            if (lastMainBuild === xhr.responseText)
+                                return;
+                            lastMainBuild = xhr.responseText;
+
+                            build.isNew = !timeOfLastNotifyOfMainBuild() || (build.startDate > timeOfLastNotifyOfMainBuild());
+
+                            timeOfLastNotifyOfMainBuild(build.startDate);
+
+                            var mainBuildModel = ko.mapping.fromJS(build, {
+                                create: function (options) {
+                                    return new MainBuildViewModel(options.data);
+                                }
+                            });
+
+                            mainBuildModel.investigations = getInvestigationsForBuildType(build.buildTypeId);
+
+
+                            mainBuildModel.changes = (function () {
+                                var changesFromApi = ko.observable([]);
+                                var isResultUpdate = false;
+
+                                return ko.computed({
+                                    read: function () {
+                                        if (!isResultUpdate) {
+                                            $.ajax({
+                                                dataType: "json",
+                                                url: Settings.teamCityBaseUrl + build.changes.href + Utils.getTsQSParam(),
+                                                xhrFields: { withCredentials: true }
+                                            }).always(function (changesResult) {
+                                                try {
+                                                    var error = Utils.getErrorFromAjaxAlways.apply(this, arguments);
+                                                    if (error) {
+                                                        mainBuildFromApi(undefined); // TODO show the error
+                                                        return;
+                                                    }
+
+                                                    isResultUpdate = true;
+                                                    changesFromApi(changesResult.change || []);
+                                                } finally {
+                                                    isResultUpdate = false;
+                                                }
+                                            })
+                                            ;
+                                        }
+                                        return changesFromApi();
+                                    },
+                                    deferEvaluation: true
+                                });
+                            })();
+
+                            mainBuildFromApi(mainBuildModel);
+                        } finally {
+                            isResultUpdate = false;
                         }
                     });
                 }
@@ -319,14 +331,12 @@
                         dataType: "json",
                         url: Settings.restApiBaseUrl + '/investigations?locator=buildType:(id:(' + buildTypeId + '))' + Utils.getTsQSParam(),
                         xhrFields: { withCredentials: true },
-                        success: function (data) {
-                            try {
-                                // TODO #HandleErrors
-                                isResultUpdate = true;
-                                investigationsFromApi(data.investigation || []);
-                            } finally {
-                                isResultUpdate = false;
-                            }
+                    }).always(function (data) {
+                        try {
+                            isResultUpdate = true;
+                            investigationsFromApi(Utils.getErrorFromAjaxAlways.apply(this, arguments) || data.investigation || []);
+                        } finally {
+                            isResultUpdate = false;
                         }
                     });
                 }
@@ -342,8 +352,6 @@
         volume: Utils.getObservableBackedByStorage(window.localStorage, 'audio.volume', 1),
         isMuted: Utils.getObservableBackedByStorage(window.localStorage, 'audio.isMuted', false)
     };
-
-    self.errorMessage = ko.observable();
 
     var imageUpdateTickSource = ko.observable();
 
@@ -368,6 +376,13 @@
         if (Settings.enableAutoUpdate)
             setTimeout(updateData, Settings.dataUpdateIntervalMs);
     }
+
+    self.errorsInfo = ko.computed({
+        read: function() {
+            return currentViewDataModel().errorsInfo();
+        },
+        deferEvaluation: true
+    });
 
     self.init = function () {
         setInterval(function () { imageUpdateTickSource(!imageUpdateTickSource()); }, Settings.buildImageIntervalMs);
