@@ -84,17 +84,33 @@
             var isResultUpdate = false;
             var builds = ko.computed({
                 read: function () {
-                    if (!isResultUpdate) {
-                        $.ajax({
+                    function ajaxLastBuild(nonRunningOnly) {
+                        return $.ajax({
                             dataType: "json",
-                            url: Settings.buildsUrl + ',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:(' + branch.name + ')')) + '),count:1&fields=build(id,buildTypeId,number,status,state,running,percentageComplete,branchName,href,webUrl,startDate)' + Utils.getTsQSParam(),
+                            url: Settings.restApiBaseUrl + '/builds?locator=running:'+(nonRunningOnly ? 'false' : 'any')+',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:(' + branch.name + ')')) + '),count:1&fields=build(id,buildTypeId,number,status,state,running,percentageComplete,branchName,href,webUrl,startDate)' + Utils.getTsQSParam(),
                             xhrFields: { withCredentials: true }
-                        }).always(function (data) {
-                            try {
-                                isResultUpdate = true;
-                                buildsFromApi(Utils.getErrorFromAjaxAlways.apply(this, arguments) || data.build || []);
-                            } finally {
-                                isResultUpdate = false;
+                        });
+                    }
+                    if (!isResultUpdate) {
+                        ajaxLastBuild().always(function (responseDataWhereRunningIsAny) {
+                            var error = Utils.getErrorFromAjaxAlways.apply(this, arguments);
+                            var buildsWhereRunningIsAny = responseDataWhereRunningIsAny.build || [];
+                            if (error || !responseDataWhereRunningIsAny.build || !responseDataWhereRunningIsAny.build[0] || !responseDataWhereRunningIsAny.build[0].running) {
+                                try {
+                                    isResultUpdate = true;
+                                    buildsFromApi(error || buildsWhereRunningIsAny);
+                                } finally {
+                                    isResultUpdate = false;
+                                }
+                            } else { // Build is running. Don't triumph yet. Look for the previous one, it could be red.
+                                ajaxLastBuild(/*nonRunningOnly:*/true).always(function (buildsWhereRunningIsFalse) {
+                                    try {
+                                        isResultUpdate = true;
+                                        buildsFromApi(Utils.getErrorFromAjaxAlways.apply(this, arguments) || (buildsWhereRunningIsFalse.build || []).concat(buildsWhereRunningIsAny));
+                                    } finally {
+                                        isResultUpdate = false;
+                                    }
+                                });
                             }
                         });
                     }
