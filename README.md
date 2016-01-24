@@ -1,13 +1,13 @@
 TravCorp's Radiator for TeamCity
 ==========
 Based on [RobBollons/tc-radiate](https://github.com/RobBollons/tc-radiate) with improved features:
-* Self hostable on Github under _youraccount.github.io/tc-radiate_ (deploy automatically by pushing to gh-pages branch)
-* Supports 'no guest account' setups of TeamCity (uses standard browser's basic authentication, so no credentials saved when not wanted)
-* Support for multiple projects (displays full name of each build)
-* Prioritizes by: _Uninvestigated Failure_ > _Investigated Failure_ > _Running_ > _Success_ (by recency within each group, big picture always shows highest priority)
+* Self-hostable on Github under _youraccount.github.io/tc-radiate_ (deploy automatically by pushing to gh-pages branch)
+* Supports 'no guest account' setups of TeamCity (uses the standard browser's basic authentication, so no credentials saved when not wanted)
+* Support for multiple projects (displays full name of each build, every project will be shown, even if it wasnt built in 20 last buids)
+* List by priority: _Uninvestigated Failure_ > _Investigated Failure_ > _Running_ > _Success_ (within each group by recency, big picture always shows highest priority)
 * Shows author names of failed changes (when no changes shows who triggerred the build)
-* Shows investigator and investigator's comment
-* Can play sound on failure (can be muted persistently)
+* Shows investigator name and his comment, if provided
+* Can play sound on failure (when not wanted can be muted persistently)
 * Very easy to add more sounds and images (supports remote URLs with fallback to local ones)
 
 <img src="screenshot.jpg" width="600" />
