@@ -16,7 +16,7 @@ Based on [RobBollons/tc-radiate](https://github.com/RobBollons/tc-radiate) with 
 Working monitors
 -------------
 They're here: https://travcorp.github.io/tc-radiate/
-(use your own TeamCity credentials or the [shared one](http://ttcwiki/display/itropics/Passwords+to+production#Passwordstoproduction-teamcitysharedaccount))
+(use your own TeamCity credentials or the [shared one](http://ttcwiki/display/itropics/Passwords+to+the+build+infrastructure#Passwordstothebuildinfrastructure-teamcitysharedaccount))
 
 Hacking the monitors:
 -------------
