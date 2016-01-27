@@ -40,12 +40,15 @@
                 || [
                     "Run BDD tests on develop branch"
                 ].indexOf(branch.buildType.name) == -1) // Ignore SSO E2E tests, as they are not reliable. Fix and unignore!
+			&& (branch.buildType.projectName != "iTROPICS :: Nightly Integration Tests" 
+			|| [
+				"Nightly Integration Tests"
+			].indexOf(branch.buildType.name) == -1) // Ignore iTropics Nightly Integration tests until the AWS Deploy Dev environment is created properly
             && (branch.buildType.projectName != "iTROPICS" 
                 || [
                     "AWS Deploy QA",
-					"AWS Deploy Dev",
-					"Nightly Integration Tests"
-                ].indexOf(branch.buildType.name) == -1) // Ignore iTropics QA deployment, as the environment is not ready. Also, ignore iTropics Dev deployment and iTropics Nightly integration tests as environment is being created
+					"AWS Deploy Dev"
+                ].indexOf(branch.buildType.name) == -1) // Ignore iTropics QA and Dev deployment, as the environment is not ready.
             && (
                 !branch.name /* No branch name is there for builds with no VCS roots at all, or when 'Branch specification' is left empty (e.g. when not using feature branches at all)*/
                 || [
