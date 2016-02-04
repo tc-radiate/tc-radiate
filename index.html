@@ -127,7 +127,7 @@
 	    </div>
 
 	</div>
-    <div class="error-box" data-bind="showHide: errorsInfo, with: errorsInfo">
+    <div class="error-box" style="display: none" data-bind="showHide: errorsInfo, with: errorsInfo">
         <!-- ko if: $data.code === 'CONNECTION_ERROR' && !$parent.hasConnectionWorked() -->
         <div>
             <h1>Sorry! I can't access the TeamCity web service.</h1>
@@ -189,7 +189,7 @@
             <!-- /ko -->
         </div>
     </div>
-    <div class="error-box" data-bind="showHide: !errorsInfo() && !isFirstLoad() && builds().length === 0">
+    <div class="error-box" style="display: none;" data-bind="showHide: !isFirstLoad() && builds().length === 0 && !errorsInfo()">
         <div>There's no builds!? Better crack on with some work!</div>
     </div>
 
