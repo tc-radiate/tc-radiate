@@ -70,6 +70,9 @@
                             return branchFromApi;
                         })
                         .filter(Settings.branchFilter || function () { return true; })
+                        .filter(function (branch) {
+                            return _(thisClientBranchFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(branch); }) === false;
+                        })
                         .map(function (branchFromApi) {
                             branchFromApi.builds = getBuildsForBranchObservable(branchFromApi);
                             return branchFromApi;
@@ -141,7 +144,11 @@
                                 return branch.builds().isLoadingPlaceholder || branch.builds().isError ? branch.builds() : _(branch.builds()).map(function (build) { return (build.investigations && build.investigations().isLoadingPlaceholder || build.investigations().isError ? build.investigations() : build); });
                             });
                         });
-                    }).flatten().value());
+                    })
+                    .flatten()
+                    .sortBy(function (build) { return (build.isLoadingPlaceholder || build.isError) ? 6 : (build.status() !== 'SUCCESS' ? (build.isRunning() ? 5 : (build.investigations().length === 0 ? 4 : 3)) : (build.isRunning() ? 2 : 1)) + '_' + build.startDate(); })
+                    .reverse()
+                    .value());
             },
             deferEvaluation: true
         });
@@ -162,6 +169,7 @@
                 },
                 deferEvaluation: true
             }),
+            allBuildsOfAllProjectsOrPlaceholders: allBuildsOfAllProjectsOrPlaceholders,
             allLoadedBuildsOfAllProjects: ko.computed({
                     read: function () {
                         return allBuildsOfAllProjectsOrPlaceholders().filter(function (build) { return !build.isLoadingPlaceholder && !build.isError; });
@@ -196,37 +204,32 @@
     });
     self.hasConnectionWorked = ko.observable(false);
 
-    var buildFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ getAppStorageKey('buildFilterExcludeProperties'));
-    var buildFilterExcludeFunctions = ko.computed(function () {
-        return _(buildFilterExcludeProperties()).map(function(buildToExcludeProps) {
-            return function(buildToTest) {
-                return ((!buildToExcludeProps.branchName && !buildToTest.branchName) || (buildToTest.branchName && buildToTest.branchName() === buildToExcludeProps.branchName)) && buildToTest.buildTypeId() === buildToExcludeProps.buildTypeId;
+    var thisClientBranchFilterExcludeProperties = Utils.getObservableArrayBackedByStorage(/*storage:*/ window.localStorage, /*storageKey:*/ getAppStorageKey('buildFilterExcludeProperties'));
+    var thisClientBranchFilterExcludeFunctions = ko.computed(function () {
+        return _(thisClientBranchFilterExcludeProperties()).map(function(branchToExcludeProps) {
+            return function(branchToTest) {
+                return ((!branchToExcludeProps.branchName && !branchToTest.name) || (branchToTest.name === branchToExcludeProps.branchName)) && branchToTest.buildType.id === branchToExcludeProps.buildTypeId;
             };
         });
 
     });
 
     self.excludedBuilds = {
-        get length() { return buildFilterExcludeProperties().length },
+        get length() { return thisClientBranchFilterExcludeProperties().length },
         push: function (build) {
-            buildFilterExcludeProperties.push({
+            thisClientBranchFilterExcludeProperties.push({
                 branchName: build.branchName && build.branchName(),
                 buildTypeId: build.buildTypeId()
             });
         },
         removeAll: function () {
-            buildFilterExcludeProperties.removeAll();
+            thisClientBranchFilterExcludeProperties.removeAll();
         }
     };
 
     self.builds = ko.computed({
         read: function () {
-            return _(currentViewDataModel().allLoadedBuildsOfAllProjects()).chain().filter(function (build) {
-                return _(buildFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(build); }) === false;
-            })
-            .sortBy(function (build) { return (build.status() !== 'SUCCESS' ? (build.isRunning() ? 5 : (build.investigations().length === 0 ? 4 : 3)) : (build.isRunning() ? 2 : 1)) + '_' + build.startDate(); })
-            .value()
-            .reverse();
+            return currentViewDataModel().allLoadedBuildsOfAllProjects();
         },
         deferEvaluation: true
     });
@@ -236,7 +239,6 @@
         var lastMainBuild = undefined;
 
         var mainBuildFromApi = ko.observable();
-        var lastBuildId;
 
         var timeOfLastNotifyOfMainBuild = Utils.getObservableBackedByStorage(
             /*storage:*/ window.sessionStorage, // So that refreshing the same tab doesn't makes us notify again (e.g. play the sound), but if we restart the browser or use a new tab, we get fresh notifications.
@@ -248,14 +250,10 @@
                 var url = null;
                 if (Settings.mainBranch)
                     url = getBuildStatusUrlForBranch(Settings.mainBranch);
-                else {
-                    var buildId = self.builds().length && (_(self.builds()).find(function (build) {
-                            return build.status() === 'FAILURE';
-                        }) || self.builds()[0]).id();
-                    if (!self.isFirstLoad() && buildId && buildId !== lastBuildId) {
-                        lastBuildId = buildId;
-                        url = getBuildStatusUrlForBuildId(buildId);
-                    }
+                else if (!currentViewDataModel().isInitializing()) {
+                    var build = currentViewDataModel().allBuildsOfAllProjectsOrPlaceholders()[0];
+                    if (build && !build.isError)
+                        url = getBuildStatusUrlForBuildId(build.id());
                 }
 
                 if (url && !isResultUpdate) {
