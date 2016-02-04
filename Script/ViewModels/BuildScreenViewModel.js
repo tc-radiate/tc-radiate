@@ -124,7 +124,7 @@
                         build.investigations = function() {
                                 return (investigationsComputed || (investigationsComputed = build.status === 'SUCCESS' ? ko.observable([]) : getInvestigationsForBuildType(build.buildTypeId)))();
                             };
-
+                        build.investigations.isInvestigated = function () { return investigationsComputed && investigationsComputed.isInvestigated && investigationsComputed.isInvestigated(); };
                         return new SingleBuildViewModel(build, buildTypes());
                     });
                 },
@@ -361,6 +361,14 @@
             },
             deferEvaluation: true
         });
+        observableInvestigations.isInvestigated = ko.computed({
+            read: function() {
+                return !!_(observableInvestigations()).filter(function (investigation) { return investigation.state !== 'GIVEN_UP'; }).length;
+            },
+            deferEvaluation: true,
+        });
+        observableInvestigations.refresh = function () { refreshTrigger.notifySubscribers(); };
+        return observableInvestigations;
     }
 
 
@@ -383,6 +391,7 @@
         newDataModel.isInitializing.subscribe(function (isInitializing) {
             if (!isInitializing) {
                 currentViewDataModel(newDataModel);
+                self.mainBuild() && self.mainBuild().investigations.refresh();
                 ensureDataAutoUpdate();
             }
         });

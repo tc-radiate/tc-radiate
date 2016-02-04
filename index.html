@@ -10,7 +10,7 @@
 	<div class="page-content" data-bind="showHide: !isFirstLoad() || builds().length">
 	    <div id="left-panel">
 	        <ul data-bind="foreach: { data: builds }">
-	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning(), investigated: investigations() && investigations().length },
+	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning(), investigated: $data.investigations() && $data.investigations.isInvestigated() },
                         event: {
                             contextmenu: function () {
                                 if (confirm('Are you sure you want to stop monitoring this branch?\n(Right click on the big picture to show them all again)'))
@@ -41,7 +41,7 @@
                         }">
             <div class="page-loading" data-bind="showHide: isFirstLoad()"></div>
 	        <!-- ko with: mainBuild -->
-	        <div id="main-build" data-bind="css: lowerStatus() + ' ' + ($data.investigations() && $data.investigations().length ? 'investigated' : '')">
+	        <div id="main-build" data-bind="css: lowerStatus() + ' ' + ($data.investigations && $data.investigations.isInvestigated() ? 'investigated' : '')">
 	            <img data-bind="
                     attr: { src: $root.getImageForStatus(lowerStatus()) },
                     event: {
@@ -97,13 +97,14 @@
                     </div>
                     <div id="main-branch-investigated-by" style="margin-bottom: .5em" data-bind="with: $data.investigations">
                         <!-- ko if: length -->
+
+                        <!-- ko if: $parent.investigations.isInvestigated -->
                         Investigated by
+                        <!-- /ko -->
                         <ul class="inlineSentenceList" data-bind="foreach: $data">
-                            <!-- ko if: assignee.name -->
                             <li>
-                                <span class="highlight"><!-- ko text: assignee.name --><!-- /ko --><!-- ko if: assignment && assignment.text -->: <i style="font-weight: normal" data-bind="text: assignment.text"></i><!-- /ko --></span>
+                                <span class="highlight"><!-- ko if: state !== 'GIVEN_UP' --><!-- ko text: assignee.name --><!-- /ko --><!-- /ko --><!-- ko if: assignment && assignment.text -->💬: <i style="font-weight: normal" data-bind="text: assignment.text"></i><!-- /ko --></span>
                             </li>
-                            <!-- /ko -->
                         </ul>
                         <!-- /ko -->
                     </div>
