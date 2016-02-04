@@ -336,10 +336,12 @@
     })();
 
     function getInvestigationsForBuildType(buildTypeId) {
+        var refreshTrigger = ko.observable();
         var investigationsFromApi = ko.observable({ isLoadingPlaceholder: true });
         var isResultUpdate = false;
-        return ko.computed({
+        var observableInvestigations = ko.computed({
             read: function () {
+                refreshTrigger(); // This add dependency on the refresh trigger, so that we recompute again when it fires.
                 if (!isResultUpdate) {
                     $.ajax({
                         dataType: "json",
