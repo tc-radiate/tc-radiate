@@ -17,13 +17,13 @@
                                     $root.excludedBuilds.push($data);
                             }
                         }">
-	                <div class="build-project"><span data-bind="text: buildType().projectName"></span> >
-	                </div>
-	                <div class="build-type" data-bind="text: buildType"></div>
+	                <span class="build-project"><span data-bind="text: buildType().projectName"></span> >
+	                </span>
+                    <a data-bind="attr: { href: buildType().webUrl }" target="_blank"><span class="build-type" data-bind="text: buildType"></span></a>
                     <!-- ko if: $data.branchName -->
 	                    <div class="build-branch"> > <i class="build-branch-name" data-bind="text: branchName"></i> branch</div>
                     <!-- /ko -->
-                    <div class="build-number">#<span data-bind="text: number"></span> </div>
+                    <a data-bind="attr: { href: webUrl }" target="_blank"><span class="build-number">#<span data-bind="text: number"></span></span></a>
 	                <div class="clear"></div>
 	                <time data-bind="
                           attr: { datetime: moment(($data.finishDate && finishDate()) || startDate(), 'YYYYMMDDTHHmmssZ').format() },
@@ -93,11 +93,11 @@
                         },
                     "></audio>
                     <div id="main-branch-name">
-                        <span class="build-project" data-bind="text: buildType.projectName"></span> > <span class="build-type" data-bind="text: buildType.name"></span> >
+                        <span class="build-project" data-bind="text: buildType.projectName"></span> > <a data-bind="attr: { href: buildType.webUrl }" target="_blank"><span class="build-type" data-bind="text: buildType.name"></span></a> >
                         <!-- ko if: $data.branchName -->
                         <span class="build-branch"><i class="build-branch-name" data-bind="text: branchName"></i> branch</span> >
                         <!-- /ko -->
-                        Build <span class="build-number" class="highlight" data-bind="text: number"></span>
+                        <a data-bind="attr: { href: webUrl }" target="_blank">Build <span class="build-number" class="highlight" data-bind="text: number"></span></a>
                     </div>
                     <div id="main-branch-investigated-by" style="margin-bottom: .5em" data-bind="with: $data.investigations">
                         <!-- ko if: length -->

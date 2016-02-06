@@ -5,6 +5,13 @@
     font-family: Calibri, Tahoma;
     letter-spacing: 2px;
 }
+a {
+    text-decoration: none;
+    color: inherit;
+}
+a:hover {
+    color: rgb(35, 60, 200);
+}
 
 .page-content {
 	display:none;
