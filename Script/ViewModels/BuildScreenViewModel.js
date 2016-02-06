@@ -43,7 +43,7 @@
             var branchesFromApi = ko.observable({ isLoadingPlaceholder: true });
 
             var isResultUpdate = false;
-            return ko.computed({
+            var branchesUnfiltered = ko.computed({
                 read: function () {
                     if (!isResultUpdate) {
                         $.ajax({
@@ -65,19 +65,27 @@
                         });
                     }
 
-                    return branchesFromApi().isLoadingPlaceholder || branchesFromApi().isError ? branchesFromApi() : _(branchesFromApi()).map(function (branchFromApi) {
+                    return branchesFromApi().isLoadingPlaceholder || branchesFromApi().isError ? branchesFromApi() : branchesFromApi().map(function (branchFromApi) {
                             branchFromApi.buildType = buildType;
                             return branchFromApi;
-                        })
-                        .filter(Settings.branchFilter || function () { return true; })
-                        .filter(function (branch) {
-                            return _(thisClientBranchFilterExcludeFunctions()).any(function (shouldExclude) { return shouldExclude(branch); }) === false;
                         })
                         .map(function (branchFromApi) {
                             branchFromApi.builds = getBuildsForBranchObservable(branchFromApi);
                             return branchFromApi;
-                        });
+                        })
+                    ;
                 }
+            });
+            return ko.computed({
+                read: function() {
+                    return branchesUnfiltered().isLoadingPlaceholder || branchesUnfiltered().isError ? branchesUnfiltered() : branchesUnfiltered()
+                        .filter(Settings.branchFilter || function () { return true; })
+                        .filter(function(branch) {
+                            return _(thisClientBranchFilterExcludeFunctions()).any(function(shouldExclude) { return shouldExclude(branch); }) === false;
+                        })
+;
+                },
+                deferEvaluation: true,
             });
         }
 
@@ -245,8 +253,8 @@
             /*storageKey:*/ 'timeOfLastNotifyOfMainBuild'
             );
 
-        ko.computed({
-            read: function () {
+        var mainBuildUrl = ko.computed({
+            read: function() {
                 var url = null;
                 if (Settings.mainBranch)
                     url = getBuildStatusUrlForBranch(Settings.mainBranch);
@@ -255,11 +263,17 @@
                     if (build && !build.isError)
                         url = getBuildStatusUrlForBuildId(build.id());
                 }
+                return url;
+            },
+            deferEvaluation: true,
+        });
 
-                if (url && !isResultUpdate) {
+        ko.computed({
+            read: function () {
+                if (mainBuildUrl() && !isResultUpdate) {
                     $.ajax({
                         dataType: "json",
-                        url: url + '?' + Utils.getTsQSParam(),
+                        url: mainBuildUrl() + '?' + Utils.getTsQSParam(),
                         xhrFields: { withCredentials: true }
                     }).always(function (build, status, xhr) {
                         try {
@@ -329,7 +343,7 @@
                 }
 
                 return mainBuildFromApi();
-            }
+            },
         });
 
         return mainBuildFromApi;
