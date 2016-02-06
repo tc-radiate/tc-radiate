@@ -98,7 +98,7 @@
                     function ajaxLastBuild(nonRunningOnly) {
                         return $.ajax({
                             dataType: "json",
-                            url: Settings.restApiBaseUrl + '/builds?locator=running:'+(nonRunningOnly ? 'false' : 'any')+',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:(' + branch.name + ')')) + '),count:1&fields=build(id,buildTypeId,number,status,state,running,percentageComplete,branchName,href,webUrl,startDate)' + Utils.getTsQSParam(),
+                            url: Settings.restApiBaseUrl + '/builds?locator=running:'+(nonRunningOnly ? 'false' : 'any')+',buildType:(id:(' + branch.buildType.id + ')),branch(' + (branch.isNoBranchPlaceHolder ? 'branched:false' : ('name:(' + branch.name + ')')) + '),count:1&fields=build(id,buildTypeId,number,status,state,running,percentageComplete,branchName,href,webUrl,startDate,finishDate)' + Utils.getTsQSParam(),
                             xhrFields: { withCredentials: true }
                         });
                     }

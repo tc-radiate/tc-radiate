@@ -25,6 +25,10 @@
                     <!-- /ko -->
                     <div class="build-number">#<span data-bind="text: number"></span> </div>
 	                <div class="clear"></div>
+	                <time data-bind="
+                          attr: { datetime: moment(($data.finishDate && finishDate()) || startDate(), 'YYYYMMDDTHHmmssZ').format() },
+                          afterHtmlRender: $($element).timeago()
+                          "></time>
 	                <div class="build-status" data-bind="text: isRunning() ? '' : status"></div>
 	                <div class="clear"></div>
 	                <!-- ko if: hasProgress() -->
@@ -199,7 +203,9 @@
     <script src="Script/Libraries/knockout.bindings.afterHtmlRender.js"></script>
     <script src="Script/Libraries/knockout.mapping-2.4.1.js"></script>
     <script src="Script/Libraries/jquery-2.0.0.min.js"></script>
+    <script src="Script/Libraries/jquery.timeago.js"></script>
     <script src="Script/Libraries/jquery-ui.min.js"></script>
+    <script src="Script/Libraries/moment.js"></script>
 
     <script src="Script/Utils.js"></script>
     <script src="Settings.js"></script>
