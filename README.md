@@ -1,6 +1,8 @@
 TravCorp's Radiator for TeamCity
 ==========
-Based on [RobBollons/tc-radiate](https://github.com/RobBollons/tc-radiate) with improved features:
+Based on [RobBollons/tc-radiate](https://github.com/RobBollons/tc-radiate) with improved features.
+Features
+-------------
 * Self-hostable on Github under _youraccount.github.io/tc-radiate_ (just fork this repo for your own URL, make changes and deploy them instantly by pushing to gh-pages branch)
 * Supports 'no guest account' setups of TeamCity, with no credentials saved in code (uses the standard browser's basic authentication, so you can save credentials in your browser, or just keep entering them)
 * Supports multiple projects (displays full name of each build, every project will be shown, even if it wasnt built in 20 last buids)
