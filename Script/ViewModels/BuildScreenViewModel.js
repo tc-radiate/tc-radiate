@@ -154,7 +154,7 @@
                         });
                     })
                     .flatten()
-                    .sortBy(function (build) { return (build.isLoadingPlaceholder || build.isError) ? 6 : (build.status() !== 'SUCCESS' ? (build.isRunning() ? 5 : (build.investigations().length === 0 ? 4 : 3)) : (build.isRunning() ? 2 : 1)) + '_' + build.startDate(); })
+                    .sortBy(function (build) { return (build.isLoadingPlaceholder || build.isError) ? 6 : (build.status() !== 'SUCCESS' ? (build.isRunning() ? 5 : ((build.investigations && build.investigations.isInvestigated && build.investigations.isInvestigated()) === false ? 4 : 3)) : (build.isRunning() ? 2 : 1)) + '_' + build.startDate(); })
                     .reverse()
                     .value());
             },
