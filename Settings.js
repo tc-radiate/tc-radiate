@@ -1,31 +1,6 @@
-﻿var DefaultSettings = {
+﻿var organizationSettings = {
     //The url that points to team city
     teamCityUrl: 'https://ci.travcorpservices.com',
-
-    //The main branch to show the master build status on the right hand panel on the screen. Leave empty to show the first failed one.
-    mainBranch: '',
-
-    //Proxy to handle the cross domain ajax request.
-    // This will need to be hosted on the relevant server e.g. proxy-node.js on Node.js or proxy-aspnet.ashx on IIS
-    // You could write your own proxy just so long as it is hosted form the same domain as the rest of the app
-    proxy: '',
-
-    // If your TeamCity is set up for guest access, you can just use it. Otherwise, the moment that tc-radiate sends first request to TC, TC will
-    // ask the user for basic http credentials. Your browser may even offer you to save them.
-    useTeamCityGuest: false,
-
-    //How often to refresh the whole page in order to update the application (to get all the latest changes without having to come to the monitor and refresh).
-    // Set to [0/undefined/null] to disable just this. Use enableAutoUpdate to disable this and any data updates.
-    appUpdateIntervalMs: 1 /*hr*/ * 60 * 60 * 1000,
-
-    //How often to call the TeamCity webservices and update the data on the screen
-    dataUpdateIntervalMs: 30/*sec*/ * 1000,
-
-    //How often to refresh the build image;
-    buildImageIntervalMs: 15/*min*/ * 60 * 60 * 1000,
-
-    //use this to stop the screen from updating automatically at all (disables both appUpdateIntervalMs and dataUpdateIntervalMs). You will need to manually refresh the page to get new data.
-    enableAutoUpdate: true,
 
     //Only show builds for branches that satisfy the predicate
     branchFilter: function(branch) {
@@ -60,20 +35,53 @@
                 ].indexOf(branch.name) > -1
             )
         );
-    }
+    },
 };
 
-var Settings = DefaultSettings;
+var DefaultSettings = {
+    //The main branch to show the master build status on the right hand panel on the screen. Leave empty to show the first failed one.
+    mainBranch: '',
+
+    //Proxy to handle the cross domain ajax request.
+    // This will need to be hosted on the relevant server e.g. proxy-node.js on Node.js or proxy-aspnet.ashx on IIS
+    // You could write your own proxy just so long as it is hosted form the same domain as the rest of the app
+    proxy: '',
+
+    // If your TeamCity is set up for guest access, you can just use it. Otherwise, the moment that tc-radiate sends first request to TC, TC will
+    // ask the user for basic http credentials. Your browser may even offer you to save them.
+    useTeamCityGuest: false,
+
+    //How often to refresh the whole page in order to update the application (to get all the latest changes without having to come to the monitor and refresh).
+    // Set to [0/undefined/null] to disable just this. Use enableAutoUpdate to disable this and any data updates.
+    appUpdateIntervalMs: 1 /*hr*/ * 60 * 60 * 1000,
+
+    //How often to call the TeamCity webservices and update the data on the screen
+    dataUpdateIntervalMs: 30/*sec*/ * 1000,
+
+    //How often to refresh the build image;
+    buildImageIntervalMs: 15/*min*/ * 60 * 60 * 1000,
+
+    //use this to stop the screen from updating automatically at all (disables both appUpdateIntervalMs and dataUpdateIntervalMs). You will need to manually refresh the page to get new data.
+    enableAutoUpdate: true,
+
+};
+
+var Settings = _.clone(DefaultSettings);
 
 var queryString = Utils.getObjectFromQueryString();
-if (queryString.teamCityUrl)
-    Settings.teamCityUrl = queryString.teamCityUrl;
-else
-    history.replaceState(null, '', '?' + 'teamCityUrl=' + Settings.teamCityUrl + (location.search ? '&' + location.search.substr(1):'')); // Put the TeamCity url to the querystring - a cheap way of advertising to savvy users that they can connect to a different instance, and that they can have each tab connected to a different one
+Settings.teamCityUrl = queryString.teamCityUrl || organizationSettings.teamCityUrl;
+
 
 //Allow the settings to be overridden by querystring parameters
 //(url parameters are currently only treated as strings)
-jQuery.extend(Settings, UrlParams);
+_.defaults(Settings, queryString);
+
+if (!queryString.teamCityUrl)
+    history.replaceState(null, '', '?' + 'teamCityUrl=' + Settings.teamCityUrl + (location.search ? '&' + location.search.substr(1) : '')); // Put the TeamCity url to the querystring - a cheap way of advertising to savvy users that they can connect to a different instance, and that they can have each tab connected to a different one
+
+if (Settings.teamCityUrl === organizationSettings.teamCityUrl) {
+    _.defaults(Settings, organizationSettings);
+}
 
 var authType = Settings.useTeamCityGuest ? 'guestAuth' : 'httpAuth';
 
