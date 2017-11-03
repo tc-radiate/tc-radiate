@@ -16,8 +16,7 @@ Features
 
 Working monitors
 -------------
-An example is here: [https://tc-radiate.github.io/tc-radiate/](https://tc-radiate.github.io/tc-radiate/),  
-but to be able to see it talking securely to your TeamCity, you should create your own domain by forking. To do that, follow the [Setup](#setup).
+They're here: https://aqovia.github.io/tc-radiate/
 
 Setup
 -------------
