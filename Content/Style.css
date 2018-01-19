@@ -72,6 +72,10 @@ a:hover {
     content: '🔍 ';
 }
 
+.failure.paused {
+    background: grey !important;
+}
+
 .running {
     background-color: gray!important;
 }

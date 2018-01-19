@@ -6,7 +6,7 @@ Features
 * Self-hostable on Github under _youraccount.github.io/tc-radiate_ (just fork this repo for your own URL, make changes and deploy them instantly by pushing to gh-pages branch)
 * Supports 'no guest account' setups of TeamCity, with no credentials saved in code (uses the standard browser's basic authentication, so you can save credentials in your browser, or just keep entering them)
 * Supports multiple projects (displays full name of each build, every project will be shown, even if it wasnt built in 20 last buids)
-* List ordered by priority: _Uninvestigated Failure_ > _Investigated Failure_ > _Running_ > _Success_ (within each group sorted by recency, big picture always shows highest priority)
+* List ordered by priority: _Uninvestigated Failure_ > _Investigated Failure_ > _Running_ > _Success_ > _Paused_ (within each group sorted by recency, big picture always shows highest priority)
 * Shows author names of failed changes (when no changes shows who triggerred the build)
 * Shows investigator name and his comment, if provided
 * Can play sound on failure (when not wanted can be muted persistently)

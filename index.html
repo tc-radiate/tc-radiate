@@ -10,7 +10,7 @@
 	<div class="page-content" data-bind="showHide: !isFirstLoad() || builds().length">
 	    <div id="left-panel">
 	        <ul data-bind="foreach: { data: builds }">
-	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning(), investigated: $data.investigations() && $data.investigations.isInvestigated() },
+	            <li data-bind="attr: { class: lowerStatus() }, css: { running: isRunning(), investigated: $data.investigations() && $data.investigations.isInvestigated(), paused: buildType().paused },
                         event: {
                             contextmenu: function () {
                                 if (confirm('Are you sure you want to stop monitoring this branch?\n(Right click on the big picture to show them all again)'))
@@ -29,7 +29,7 @@
                           attr: { datetime: moment(($data.finishDate && finishDate()) || startDate(), 'YYYYMMDDTHHmmssZ').format() },
                           afterHtmlRender: $($element).timeago()
                           "></time>
-	                <div class="build-status" data-bind="text: isRunning() ? '' : status"></div>
+	                <div class="build-status" data-bind="text: ((isRunning() ? '' : status()) + (buildType().paused ? ' (PAUSED)' : ''))"></div>
 	                <div class="clear"></div>
 	                <!-- ko if: hasProgress() -->
                        <div class="progress-container" data-bind="attr: { 'data-progress' : percentageComplete() }"></div>
