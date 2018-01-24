@@ -54,7 +54,7 @@
                             try {
                                 isResultUpdate = true;
                                 var branches = [];
-                                // Sadly, we don't get information from '/branches?' whether there are any 'no-branch' builds on this config (such builds can only be queried by branched:false, since they don't have a name). So, we add a fake entry here. Perhaps in future we could query the configuration.
+                                // Sadly, we don't get information from '/branches?' whether there are any 'no-branch' builds on this config (such builds can only be queried by branched:false, since they don't have a name). So, we add a fake entry here. Because of that, later on, we need to #FilterOldBranchesForChangesToOrFromNoBranc. Perhaps in future we could query the configuration, but this would delay the calls for the builds.
                                 if (data.branch && data.branch.length === 1) // The entry needs to be conditional, because otherwise we will show very old builds for the jobs that only at some point started using the 'Branch specification'. This is because 'Branch specification' respects the expiry of 'Active branch' (see https://confluence.jetbrains.com/display/TCD9/Working+with+Feature+Branches#WorkingwithFeatureBranches-Activebranches ) and old 'no-branch' builds don't, so they would stay visible forever, despite being dead. If we queried the configuration we'd know for sure, but for now, we know that when the call to '/branches?' returns more than one branch, it's a sign of using the 'Branch specification' which seems to cover all our cases.
                                     branches.push({ isNoBranchPlaceHolder: true });
                                 branches = branches.concat(data.branch);
@@ -76,7 +76,8 @@
                     ;
                 }
             });
-            return ko.computed({
+
+            var branchesFiltered = ko.computed({
                 read: function() {
                     return branchesUnfiltered().isLoadingPlaceholder || branchesUnfiltered().isError ? branchesUnfiltered() : branchesUnfiltered()
                         .filter(Settings.branchFilter || function () { return true; })
@@ -87,6 +88,37 @@
                 },
                 deferEvaluation: true,
             });
+
+            return ko.computed({
+                    read: function () {
+                        // #FilterOldBranchesForChangesToOrFromNoBranch - Filter out situations when a configuration used to use a branch specification, but then changed into a 'no branch' (e.g. changed into one that only has dependencies on other configurations)
+                        if (branchesFiltered().isLoadingPlaceholder || branchesFiltered().isError)
+                            return branchesFiltered();
+                        return _.chain(branchesFiltered())
+                            .groupBy(function (branch) {
+                                return (branch.default || branch.isNoBranchPlaceHolder) ? "default" : "notDefaultSoNoNeedToFilter";
+                            })
+                            .map(function (branches, defaultType) {
+                                if (defaultType === "notDefaultSoNoNeedToFilter")
+                                    return branches;
+
+                                if (branches.length === 1)
+                                    return branches;
+
+                                if (!_(branches).every(function (defaultBranch) {
+                                    return ('length' in defaultBranch.builds());
+                                })) {
+                                    return branches;
+                                }
+                                return [_(branches).sortBy(function (defaultBranch) {
+                                    return defaultBranch.builds() && defaultBranch.builds()[0] && defaultBranch.builds()[0].startDate;
+                                })[0]];
+                            })
+                            .flatten()
+                            .value();
+                    },
+                    deferEvaluation: true,
+                });
         }
 
         function getBuildsForBranchObservable(branch) {
