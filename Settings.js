@@ -33,7 +33,7 @@ var DefaultSettings = {
 
     // If your TeamCity is set up for guest access, you can just use it. Otherwise, the moment that tc-radiate sends first request to TC, TC will
     // ask the user for basic http credentials. Your browser may even offer you to save them.
-    useTeamCityGuest: false,
+    useTeamCityGuest: true,
 
     //How often to refresh the whole page in order to update the application (to get all the latest changes without having to come to the monitor and refresh).
     // Set to [0/undefined/null] to disable just this. Use enableAutoUpdate to disable this and any data updates.
