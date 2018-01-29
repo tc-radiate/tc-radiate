@@ -96,7 +96,7 @@ Settings.restApiBaseUrl = Settings.teamCityBaseUrl + '/' + authType + '/app/rest
 Settings.buildTypesUrl = Settings.restApiBaseUrl + '/buildTypes';
 
 function getBuildStatusUrlForBranch(branchName) {
-    return Settings.restApiBaseUrl + '/builds/branch:' + branchName + ',running:any,canceled:any';
+    return Settings.restApiBaseUrl + '/builds/branch:' + branchName + ',running:any,canceled:any,failedToStart:any';
 }
 
 function getBuildStatusUrlForBuildId(buildId) {
