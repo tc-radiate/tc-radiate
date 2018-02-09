@@ -1,6 +1,6 @@
 tc-radiate
 ==========
-**UPDATE: For a newer-improved fork of tc-radiate see: https://github.com/travcorp/tc-radiate**
+**UPDATE: For a newer-improved fork of tc-radiate see: https://github.com/tc-radiate/tc-radiate**
 
 
 A simple JavaScript build radiator for TeamCity
