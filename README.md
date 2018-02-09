@@ -11,7 +11,7 @@ Features
 * Shows investigator name and his comment, if provided
 * Can play sound on failure (when not wanted can be muted persistently)
 * Shows how long ago each build was run
-* Very easy to add more sounds and images (supports remote URLs with fallback to local ones)
+* Very easy to <a href="./Content/images/!List.js" target="_blank">customize images</a> and <a href="./Content/sounds/!List.js" target="_blank">sounds</a> (supports remote URLs with fallback to local ones)
 
 <img src="screenshot.jpg" width="600" />
 
@@ -24,9 +24,6 @@ They're here: https://travcorp.github.io/tc-radiate/
 Hacking the monitors:
 -------------
 Clone this repo, play with the code and make a pull request to the `gh-pages` branch. The above page will update automatically!
-
-#### Adding/Changing content
-Edit the lists files for [images](https://github.com/travcorp/tc-radiate/blob/gh-pages/Content/images/!List.js) or [sounds](https://github.com/travcorp/tc-radiate/blob/gh-pages/Content/sounds/!List.js). The lists work with local files (dropped to the same folder as the list) as well as remote URLs (make sure that they work - hosts sometimes reject cross-domain requests).
 
 #### Testing local changes
 To test your changes on your local machine, you need to open the index.html file in a browser with disabled cross-domain security. In the [main folder](https://github.com/travcorp/tc-radiate) there are open-in-*-for-local-development.cmd files, which help you to do this. Please read and follow instructions displayed during execution.

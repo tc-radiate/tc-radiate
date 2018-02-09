@@ -1,6 +1,6 @@
 ﻿Images.failure.CodeDefinedList = [
 
-    // Local files from this folder.
+    // Local files from this folder. They will be used as fallback if an internet one didn't work:
     'angry1.png',
     'angry2.png',
     'angry3.png',
