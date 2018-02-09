@@ -1,4 +1,4 @@
-TravCorp's Radiator for TeamCity
+Radiator for TeamCity
 ==========
 Based on [RobBollons/tc-radiate](https://github.com/RobBollons/tc-radiate) with improved features.
 Features
