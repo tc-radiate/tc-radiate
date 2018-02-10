@@ -1,6 +1,5 @@
 Radiator for TeamCity
 ==========
-Based on [RobBollons/tc-radiate](https://github.com/RobBollons/tc-radiate) with improved features.
 Features
 -------------
 * Self-hostable on Github under _youraccount.github.io/tc-radiate_ (just fork this repo for your own URL, make changes and deploy them instantly by pushing to gh-pages branch)
@@ -25,24 +24,13 @@ Hacking the monitors:
 -------------
 Clone this repo, play with the code and make a pull request to the `gh-pages` branch. The above page will update automatically!
 
-#### Testing local changes
-To test your changes on your local machine, you need to open the index.html file in a browser with disabled cross-domain security. In the [main folder](https://github.com/travcorp/tc-radiate) there are open-in-*-for-local-development.cmd files, which help you to do this. Please read and follow instructions displayed during execution.
-
-
-**_Original readme from tc-radiate follows:_**
-
--------------
-
-tc-radiate
-==========
-A simple JavaScript build radiator for TeamCity
-
-Please feel free to fork and hack away at the code.
-
 Configuration
 -------------
 1. To configure tc-radiate with your own TeamCity server go to 'Settings.js' and edit the relevant variables.
 2. Set your TeamCity to allow cross-domain requests from the domain where you host the monitor (see [TeamCity Doc](https://confluence.jetbrains.com/display/TCD9/REST+API#RESTAPI-CORSSupport)). Alternatively, use a [Proxy](#proxy).
+
+#### Testing local changes
+To test your changes on your local machine, you need to open the index.html file in a browser with disabled cross-domain security. In the [main folder](https://github.com/travcorp/tc-radiate) there are open-in-*-for-local-development.cmd files, which help you to do this. Please read and follow instructions displayed during execution.
 
 Proxy
 -----
