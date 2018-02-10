@@ -157,7 +157,7 @@
                 <!-- ko if: location.host -->
                     <li>
                         <span class="question">Have you created your fork and configured your TeamCity to allow your monitor to use the TeamCity services?</span><br/>
-                        Fork your own tc-radiate <a href="https://github.com/travcorp/tc-radiate">from here</a> and open your fork's Github Pages, so that there is your username in this hostname here: '<!-- ko text: location.host --><!-- /ko -->'. Then go to <a href="" data-bind="attr: { href: Settings.teamCityUrl + '/admin/admin.html?item=diagnostics&tab=properties' }" target="_blank">Administration > Diagnostics > Internal Properies</a> and add an 'Internal property' of:
+                        Fork your own tc-radiate <a href="https://github.com/tc-radiate/tc-radiate">from here</a> and open your fork's Github Pages, so that there is your username in this hostname here: '<!-- ko text: location.host --><!-- /ko -->'. Then go to <a href="" data-bind="attr: { href: Settings.teamCityUrl + '/admin/admin.html?item=diagnostics&tab=properties' }" target="_blank">Administration > Diagnostics > Internal Properies</a> and add an 'Internal property' of:
                         <br/><i>rest.cors.origins=http://<!-- ko text: location.host --><!-- /ko -->,https://<!-- ko text: location.host --><!-- /ko --></i><br/>
                         (if that page doesn't allow you to edit internal properties, see <a href="https://confluence.jetbrains.com/display/TCD9/Configuring+TeamCity+Server+Startup+Properties#ConfiguringTeamCityServerStartupProperties-TeamCityinternalpropertiesinternal.properties" target="_blank">TC documentation</a>).
 
@@ -169,13 +169,13 @@
                 <!-- ko ifnot: location.host -->
                     <li>
                         <span class="question">Running the monitors from your local filesystem?</span><br/>
-                        See <a href="https://github.com/travcorp/tc-radiate/#testing-local-changes" target="_blank">this section</a> of the Project's Readme.
+                        See <a href="https://github.com/tc-radiate/tc-radiate/#testing-local-changes" target="_blank">this section</a> of the Project's Readme.
                     </li>
                 <!-- /ko -->
                 <li>
                     <span class="question">Just trying out? Or no admin rights to TeamCity?</span>
                     <br/>Use a browser plugin to disable Cross-Domain security. (But if you do, don't visit any other pages with that browser process!)<br/>
-                    (...or, if you're really desperate, <a href="https://github.com/travcorp/tc-radiate/#proxy" target="_blank">host your own 'security-stripping' proxy</a>)
+                    (...or, if you're really desperate, <a href="https://github.com/tc-radiate/tc-radiate/#proxy" target="_blank">host your own 'security-stripping' proxy</a>)
                 </li>
             </ul>
              

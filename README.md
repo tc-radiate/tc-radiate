@@ -16,20 +16,18 @@ Features
 
 Working monitors
 -------------
-They're here: https://travcorp.github.io/tc-radiate/
-(use your own TeamCity credentials or the [shared ones](http://ttcwiki/display/itropics/Passwords+to+the+build+infrastructure#Passwordstothebuildinfrastructure-teamcitysharedaccount))
+An example is here: [https://tc-radiate.github.io/tc-radiate/](https://tc-radiate.github.io/tc-radiate/),  
+but to be able to see it talking securely to your TeamCity, you should create your own domain by forking. To do that, follow the [Setup](#setup).
 
-Hacking the monitors:
+Setup
 -------------
-Clone this repo, play with the code and make a pull request to the `gh-pages` branch. The above page will update automatically!
-
-Configuration
--------------
-1. To configure tc-radiate with your own TeamCity server go to 'Settings.js' and edit the relevant variables.
-2. Set your TeamCity to allow cross-domain requests from the domain where you host the monitor (see [TeamCity Doc](https://confluence.jetbrains.com/display/TCD9/REST+API#RESTAPI-CORSSupport)). Alternatively, use a [Proxy](#proxy).
+1. Fork this repo. This will give you a web-page: _youraccount.github.io/tc-radiate_
+2. Edit relevant variables in [Settings.js](./Settings.js).
+2. Set your TeamCity to allow cross-domain requests from the _youraccount.github.io_ domain (see [TeamCity Doc](https://confluence.jetbrains.com/display/TCD10/REST+API#RESTAPI-CORSSupport)). Alternatively, use a [Proxy](#proxy).
+3. Enjoy your radiator at _youraccount.github.io/tc-radiate_
 
 #### Testing local changes
-To test your changes on your local machine, you need to open the index.html file in a browser with disabled cross-domain security. In the [main folder](https://github.com/travcorp/tc-radiate) there are open-in-*-for-local-development.cmd files, which help you to do this. Please read and follow instructions displayed during execution.
+To test your changes on your local machine, you need to open the index.html file in a browser with disabled cross-domain security. In the [main folder](./) there are open-in-*-for-local-development.cmd files, which help you to do this. Please read and follow instructions displayed during execution.
 
 Proxy
 -----

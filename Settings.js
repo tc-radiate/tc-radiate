@@ -1,30 +1,11 @@
 ﻿var organizationSettings = {
     //The url that points to team city
-    teamCityUrl: 'https://ci.travcorpservices.com',
+    teamCityUrl: 'https://todo.edit.this.url.invalid',
 
     //Only show builds for branches that satisfy the predicate
     branchFilter: function(branch) {
         return (
-            (branch.buildType.projectName != "Tour Itinerary Portal" 
-                || [
-                    "aws-uat :: Create stack", 
-                    "aws-uat :: Deploy", 
-                    "aws-uat :: Delete stack"
-                ].indexOf(branch.buildType.name) == -1) // Ignore TIP UAT, as the peering VPS infrastructure has not been set up
-            && (branch.buildType.projectName != "Single Sign On" 
-                || [
-                    "Run BDD tests on develop branch"
-                ].indexOf(branch.buildType.name) == -1) // Ignore SSO E2E tests, as they are not reliable. Fix and unignore!
-			&& (branch.buildType.projectName != "iTROPICS :: Nightly Integration Tests" 
-			|| [
-				"Nightly Integration Tests"
-			].indexOf(branch.buildType.name) == -1) // Ignore iTropics Nightly Integration tests until the AWS Deploy Dev environment is created properly
-            && (branch.buildType.projectName != "iTROPICS" 
-                || [
-                    "AWS Deploy QA",
-					"AWS Deploy Dev"
-                ].indexOf(branch.buildType.name) == -1) // Ignore iTropics QA and Dev deployment, as the environment is not ready.
-            && (
+            (
                 !branch.name /* No branch name is there for builds with no VCS roots at all, or when 'Branch specification' is left empty (e.g. when not using feature branches at all)*/
                 || [
                     "<default>"/*This branch name is used for the default builds, when there are multiple VCS roots with different branches (e.g. source and config files are in different repos) */,
