@@ -2,15 +2,14 @@ Radiator for TeamCity
 ==========
 Features
 -------------
-* Self-hostable on Github under _youraccount.github.io/tc-radiate_ (just fork this repo for your own URL, make changes and deploy them instantly by pushing to gh-pages branch)
-* Supports 'no guest account' setups of TeamCity, with no credentials saved in code (uses the standard browser's basic authentication, so you can save credentials in your browser, or just keep entering them)
-* Supports multiple projects (displays full name of each build, every project will be shown, even if it wasnt built in 20 last buids)
+* Self-hostable on Github under _youraccount.github.io/tc-radiate_ - just fork this repo for your own URL, edit the [Settings.js](./Settings.js) and open that URL on your big screen
 * List ordered by priority: _Uninvestigated Failure_ > _Investigated Failure_ > _Running_ > _Success_ > _Paused_ (within each group sorted by recency, big picture always shows highest priority)
+* Plays a sound on a new failure (when not wanted can be muted persistently)
+* Very easy to <a href="./Content/images/!List.js" target="_blank">customize images</a> and <a href="./Content/sounds/!List.js" target="_blank">sounds</a> (supports remote URLs with fallback to local ones)
 * Shows author names of failed changes (when no changes shows who triggerred the build)
 * Shows investigator name and his comment, if provided
-* Can play sound on failure (when not wanted can be muted persistently)
-* Shows how long ago each build was run
-* Very easy to <a href="./Content/images/!List.js" target="_blank">customize images</a> and <a href="./Content/sounds/!List.js" target="_blank">sounds</a> (supports remote URLs with fallback to local ones)
+* Auto update - any changes pushed to `gh-pages` branch get picked up automatically after a while.
+* Supports 'no guest account' setups of TeamCity, with no credentials saved in code (uses the standard browser's basic authentication, so you can save credentials in your browser, or just keep entering them)
 
 <img src="screenshot.jpg" width="600" />
 
