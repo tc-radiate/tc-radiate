@@ -61,11 +61,11 @@ a:hover {
     background-color: #5cb85c!important;
 }
 
-.failure {
+.failure, .failure.running {
     background-color: #d9534f!important;
 }
 
-.failure.investigated {
+.failure.investigated, .failure.running.investigated {
     background-color: #d9674f!important;
 }
 .failure.investigated > :first-child:before {
