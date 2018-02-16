@@ -46,7 +46,7 @@ var DefaultSettings = {
     buildImageIntervalMs: 15/*min*/ * 60 * 60 * 1000,
 
     //use this to stop the screen from updating automatically at all (disables both appUpdateIntervalMs and dataUpdateIntervalMs). You will need to manually refresh the page to get new data.
-    enableAutoUpdate: true,
+    enableAutoUpdate: false, // NOCOMMIT
 
 };
 
