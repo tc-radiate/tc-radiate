@@ -5,9 +5,9 @@
     //Only show builds for branches that satisfy the predicate
     branchFilter: function(branch) {
         return (
-            (!branch.buildType.projectName.startsWith("DBA ::")) // DBA team's responsibility
+            (!branch.buildType.projectName.startsWith("DBA /")) // DBA team's responsibility
             &&
-            (!branch.buildType.projectName.startsWith("Deploy Environment And Run Tests :: Local")) // Each dev machine owner's responsibility
+            (!branch.buildType.projectName.startsWith("Deploy Environment And Run Tests / Local")) // Each dev machine owner's responsibility
             && (
                 !branch.name /* No branch name is there for builds with no VCS roots at all, or when 'Branch specification' is left empty (e.g. when not using feature branches at all)*/
                 || [
