@@ -5,6 +5,8 @@
     //Only show builds for branches that satisfy the predicate
     branchFilter: function(branch) {
         return (
+            (!branch.buildType.projectName.startsWith("Salesforce /")) // The only project currently there, the SalesforcePartial-DB is DBA team's responsibility. In all cases Salesforce is developed by Interxion employees
+            &&
             (!branch.buildType.projectName.startsWith("DBA /")) // DBA team's responsibility
             &&
             (!branch.buildType.projectName.startsWith("Deploy Environment And Run Tests / Local")) // Each dev machine owner's responsibility
