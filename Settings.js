@@ -1,6 +1,6 @@
 ﻿var organizationSettings = {
     //The url that points to team city
-    teamCityUrl: 'http://teamcity.office.interxion.net',
+    teamCityUrl: 'https://teamcity.office.interxion.net',
 
     //Only show builds for branches that satisfy the predicate
     branchFilter: function(branch) {
