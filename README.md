@@ -16,7 +16,7 @@ Features
 
 Working monitors
 -------------
-They're here: https://aqovia.github.io/tc-radiate/
+They're here: https://aqovia.github.io/interxion-tc-radiate/
 
 Setup
 -------------
